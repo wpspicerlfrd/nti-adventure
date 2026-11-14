@@ -2,7 +2,7 @@ const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
         category: "Literacy & Math Arrays",
-        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
+        targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: true,
         readingText: "Billy to the Rescue",
         readingUrl: "https://bookspring.org/wp-content/uploads/2021/05/41354-billy-to-the-rescue.pdf",
