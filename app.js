@@ -1,5 +1,6 @@
 let secondsElapsed = 0;
 let timerInterval = null;
+let isTimerPaused = false; // Tracks pause state
 let currentActiveDay = null;
 let daySecondsSpent = {}; 
 let currentMissionIndex = 0;
@@ -41,18 +42,38 @@ function renderMap() {
 
 function startTimer() {
     if (!timerInterval) {
+        isTimerPaused = false;
         timerInterval = setInterval(() => {
-            secondsElapsed++;
-            
-            let mins = Math.floor(secondsElapsed / 60);
-            let secs = secondsElapsed % 60;
-            document.getElementById('time').innerText = 
-                String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            if (!isTimerPaused) {
+                secondsElapsed++;
+                
+                let mins = Math.floor(secondsElapsed / 60);
+                let secs = secondsElapsed % 60;
+                let timeEl = document.getElementById('time');
+                if (timeEl) {
+                    timeEl.innerText = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+                }
 
-            if (currentActiveDay) {
-                daySecondsSpent[currentActiveDay] = (daySecondsSpent[currentActiveDay] || 0) + 1;
+                if (currentActiveDay) {
+                    daySecondsSpent[currentActiveDay] = (daySecondsSpent[currentActiveDay] || 0) + 1;
+                }
             }
         }, 1000);
+    }
+}
+
+// Toggle Pause / Resume from the top bar
+function toggleTimer() {
+    isTimerPaused = !isTimerPaused;
+    const btn = document.getElementById('timer-toggle-btn');
+    if (!btn) return;
+
+    if (isTimerPaused) {
+        btn.innerText = "▶️ Resume";
+        btn.style.backgroundColor = "#2ecc71"; // Green play button when paused
+    } else {
+        btn.innerText = "⏸️ Pause";
+        btn.style.backgroundColor = "#e74c3c"; // Red pause button when running
     }
 }
 
@@ -112,10 +133,9 @@ function renderCurrentMission() {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
-    // Navigation bar (Back & Next controls)
     let navControlsHtml = `
         <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-            <button onclick="prevMission()" ${currentMissionIndex === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : 'style="background: #7f8-c8d; background-color: #7f8c8d; color: white;"'}>
+            <button onclick="prevMission()" ${currentMissionIndex === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : 'style="background-color: #7f8c8d; color: white;"'}>
                 ⬅️ Previous Step
             </button>
             <span style="align-self: center; font-size: 0.9rem; color: #bdc3c7;">Step ${currentMissionIndex + 1} of ${activeDayMissions.length}</span>
@@ -131,12 +151,11 @@ function renderCurrentMission() {
         </div>
     ` : '';
 
-    // Handle Array Builder
     if (mission.type === 'array-builder') {
         content.innerHTML = `
             <h2>${dayData.title}</h2>
             ${navControlsHtml}
-            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
             <div class="quiz-box">
                 ${hintButtonHtml}
                 <p><strong>🔢 Multiplication Scavenger Hunt:</strong> ${mission.question}</p>
@@ -160,12 +179,11 @@ function renderCurrentMission() {
         return;
     }
 
-    // Handle Science Animal Poster Studio
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
             <h2>${dayData.title}</h2>
             ${navControlsHtml}
-            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
                 <p><strong>🎨 Science Animal Research Poster Studio:</strong> ${mission.question}</p>
@@ -199,12 +217,11 @@ function renderCurrentMission() {
         return;
     }
 
-    // Handle Social Studies Community Canvas
     if (mission.type === 'community-canvas') {
         content.innerHTML = `
             <h2>${dayData.title}</h2>
             ${navControlsHtml}
-            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
                 <p><strong>🏘️ Social Studies Community Canvas:</strong> ${mission.question}</p>
@@ -252,7 +269,7 @@ function renderCurrentMission() {
     content.innerHTML = `
         <h2>${dayData.title}</h2>
         ${navControlsHtml}
-        <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+        <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
         ${readingHtml}
         <div class="quiz-box">
             ${hintButtonHtml}
@@ -373,7 +390,7 @@ function previewArray() {
     let cols = parseInt(document.getElementById('array-cols').value) || 0;
     let total = rows * cols;
 
-    let iconMap = { "Hoses": "🚒🌀💦", "Helmets": "⛑️", "Axes": "🪓", "Extinguisher": "🧯" };
+    let iconMap = { "Hoses": "🛞", "Helmets": "🪖", "Cones": "🔶", "Tools": "🧰" };
     let itemIcon = iconMap[objType] || "⭐";
 
     let gridHtml = `<p><strong>Array:</strong> ${rows} rows of ${cols} ${objType} (Total = ${total})</p><div style="font-size: 1.5rem; line-height: 1.2;">`;
@@ -438,7 +455,6 @@ function advanceMission() {
     }
 }
 
-// Navigation back function
 function prevMission() {
     if (currentMissionIndex > 0) {
         currentMissionIndex--;
@@ -453,7 +469,7 @@ function finalizeDayCompletion() {
 
     if (spentSoFar < targetSeconds) {
         let remainingMins = Math.ceil((targetSeconds - spentSoFar) / 60);
-        alert(`Great job finishing all the tasks! However, Oldham County NTI guidelines require 60-90 minutes of home learning today[cite: 2]. Please spend about ${remainingMins} more minutes reviewing or doing extra practice before completing this mission!`);
+        alert(`Great job finishing all the tasks! However, Oldham County NTI guidelines require 60-90 minutes of home learning today. Please spend about ${remainingMins} more minutes reviewing or doing extra practice before completing this mission!`);
         return;
     }
 
@@ -542,7 +558,7 @@ function printSchoolAttendanceReport() {
     `;
 
     Object.keys(dayCompletionTimestamps).forEach(dKey => {
-        htmlContent += `<li>${ntiDaysData[dKey].title}: Completed on ${dayCompletionTimestamps[dKey]} (Meets 60-90 min daily requirement)[cite: 2]</li>`;
+        htmlContent += `<li>${ntiDaysData[dKey].title}: Completed on ${dayCompletionTimestamps[dKey]} (Meets 60-90 min daily requirement)</li>`;
     });
 
     htmlContent += `
