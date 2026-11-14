@@ -1,5 +1,3 @@
-// ... (Keep all top-level variables: secondsElapsed, timerInterval, etc.)
-
 let secondsElapsed = 0;
 let timerInterval = null;
 let currentActiveDay = null;
@@ -9,10 +7,9 @@ let dayCompletionTimestamps = {};
 let answeredInferences = []; 
 let recordedArrays = []; 
 
-// To hold the drawing app instance
-let tlDrawInstance = null;
-
-// ... (Keep renderMap, startTimer, startDay functions)
+// Canvas instances for Easen's projects
+let tlDrawInstance = null;         // For Science Animal Poster
+let communityTlInstance = null;    // For Social Studies Community Canvas
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
@@ -72,10 +69,14 @@ function renderCurrentMission() {
 
     const mission = dayData.missions[currentMissionIndex];
 
-    // Clear previous drawing instance if it exists
+    // Clean up previous canvas instances if switching views
     if (tlDrawInstance) {
         tlDrawInstance.destroy();
         tlDrawInstance = null;
+    }
+    if (communityTlInstance) {
+        communityTlInstance.destroy();
+        communityTlInstance = null;
     }
 
     let readingHtml = '';
@@ -83,9 +84,8 @@ function renderCurrentMission() {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
-    // Handle Array Builder (as before)
+    // Handle Array Builder
     if (mission.type === 'array-builder') {
-        // ... (keep existing array-builder HTML)
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
@@ -111,30 +111,53 @@ function renderCurrentMission() {
         return;
     }
 
-    // NEW: Handle Digital Poster Studio
+    // Handle Science Animal Poster Studio
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
-                <p><strong>🎨 Digital Poster Studio:</strong> ${mission.question}</p>
-                <p><em>Use the tools below to draw your animal's habitat and characteristics.</em></p>
+                <p><strong>🎨 Science Animal Research Poster Studio:</strong> ${mission.question}</p>
                 
-                <!-- THE DRAWING CANVAS -->
                 <div id="digital-poster-studio">
                     <div id="tl-app" class="tl-container"></div>
                 </div>
 
                 <p><strong>Type your 5 Animal Facts Below:</strong></p>
-                <textarea id="poster-facts-input" placeholder="Example: 1. Dalmatians were often used as 'fire dogs' to run ahead of horse-drawn carriages to clear the path. 2. They are born completely white and get their spots later. 3. They are very athletic and high-energy. 4. Their short coat makes them good for riding in fire trucks. 5. They are intelligent and loyal family pets."></textarea>
+                <textarea id="poster-facts-input" placeholder="Example: 1. Dalmatians were fire dogs... 2. Born white..."></textarea>
                 
                 <br>
-                <button onclick="finalizeDayCompletion()" style="background: #2ecc71; margin-top: 15px;">I am done with my poster. Submit Work & Finish Mission!</button>
+                <button onclick="advanceFromPoster()" style="background: #3498db; margin-top: 15px;">Save Poster & Continue</button>
             </div>
         `;
-
-        // Initialize tldraw on the div we just created
         tlDrawInstance = new Tldraw.Tldraw(document.getElementById('tl-app'));
+        return;
+    }
+
+    // Handle Social Studies Community Canvas
+    if (mission.type === 'community-canvas') {
+        content.innerHTML = `
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+            <div class="quiz-box" style="text-align: left;">
+                <p><strong>🏘️ Social Studies Community Canvas:</strong> ${mission.question}</p>
+                
+                <p><strong>1. Think (Write your community definition & ideas):</strong></p>
+                <textarea id="community-definition-input" placeholder="Example: A community is a group of people and places like our neighborhood and fire station that help each other..."></textarea>
+                
+                <p style="margin-top: 15px;"><strong>2. Draw (Draw your community, important places, and people):</strong></p>
+                <div id="digital-poster-studio">
+                    <div id="community-tl-app" class="tl-container"></div>
+                </div>
+
+                <p style="margin-top: 15px;"><strong>3. Share:</strong> Discuss your drawing with a family member!</p>
+                <label><input type="checkbox" id="shared-checkbox"> I have shared and discussed my community drawing with a family member.</label>
+                
+                <br>
+                <button onclick="finalizeDayCompletion()" style="background: #2ecc71; margin-top: 15px;">Complete Day 1 & Finish!</button>
+            </div>
+        `;
+        communityTlInstance = new Tldraw.Tldraw(document.getElementById('community-tl-app'));
         return;
     }
 
@@ -157,15 +180,81 @@ function renderCurrentMission() {
     `;
 }
 
-// ... (Keep previewArray, submitArrayWork, submitAnswer functions as before)
+// Array builder logic
+function previewArray() {
+    let objType = document.getElementById('array-object').value;
+    let rows = parseInt(document.getElementById('array-rows').value) || 0;
+    let cols = parseInt(document.getElementById('array-cols').value) || 0;
+    let total = rows * cols;
 
-// ... (New finalizeDayCompletion function from previous steps)
+    let iconMap = { "Hoses": "🛞", "Helmets": "🪖", "Cones": "🔶", "Tools": "🧰" };
+    let itemIcon = iconMap[objType] || "⭐";
 
-// ... (Keep returnToMap function)
+    let gridHtml = `<p><strong>Array:</strong> ${rows} rows of ${cols} ${objType} (Total = ${total})</p><div style="font-size: 1.5rem; line-height: 1.2;">`;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            gridHtml += itemIcon + " ";
+        }
+        gridHtml += "<br>";
+    }
+    gridHtml += `</div><p><strong>Equation:</strong> ${rows} × ${cols} = ${total}</p>`;
 
-// NEW: Updated finalizeDayCompletion to handle saving the poster
+    document.getElementById('array-preview-area').innerHTML = gridHtml;
+    
+    window.tempCurrentArray = {
+        object: objType,
+        rows: rows,
+        cols: cols,
+        total: total,
+        equation: `${rows} × ${cols} = ${total} (${objType})`
+    };
+
+    document.getElementById('submit-array-btn').style.display = 'block';
+}
+
+function submitArrayWork() {
+    if (window.tempCurrentArray) {
+        recordedArrays.push(window.tempCurrentArray);
+    }
+    alert("Fantastic job building your array, Easen!");
+    advanceMission();
+}
+
+function submitAnswer(isCorrect, selectedText) {
+    if (!isCorrect) {
+        alert("Not quite! Check the reading material or clues and try again.");
+        return;
+    }
+
+    const dayData = ntiDaysData[currentActiveDay];
+    const mission = dayData.missions[currentMissionIndex];
+
+    if (currentActiveDay === '1' && mission.evidence) {
+        answeredInferences.push({
+            question: mission.question,
+            answer: selectedText,
+            evidence: mission.evidence
+        });
+    }
+
+    alert("Correct! Moving on to the next part of today's mission.");
+    advanceMission();
+}
+
+function advanceFromPoster() {
+    alert("Science poster saved!");
+    advanceMission();
+}
+
+function advanceMission() {
+    const dayData = ntiDaysData[currentActiveDay];
+    if (currentMissionIndex < dayData.missions.length - 1) {
+        currentMissionIndex++;
+        renderCurrentMission();
+    }
+}
+
 function finalizeDayCompletion() {
-    // 1. Enforce time guardrail (Optional but recommended)
     const dayData = ntiDaysData[currentActiveDay];
     const spentSoFar = daySecondsSpent[currentActiveDay] || 0;
     const targetSeconds = dayData.targetMinutes * 60;
@@ -209,15 +298,17 @@ function finalizeDayCompletion() {
     }
 }
 
+function returnToMap() {
+    currentActiveDay = null;
+    document.getElementById('activity-screen').classList.add('hidden');
+    document.getElementById('quest-map').classList.remove('hidden');
+}
 
-// ... (Keep returnToMap function)
-
-// ... (New printSchoolAttendanceReport function from previous steps, updated to handle poster)
+// Generates formal printable report including both canvases
 function printSchoolAttendanceReport() {
-    // 1. Grab the data from the text area
-    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Poster drawing completed.";
-    // Format the facts to show line breaks in the report
-    let formattedFacts = factsText.replace(/\n/g, '<br>');
+    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Completed.";
+    let communityText = document.getElementById('community-definition-input') ? document.getElementById('community-definition-input').value : "Completed.";
+    let sharedChecked = document.getElementById('shared-checkbox') ? document.getElementById('shared-checkbox').checked : true;
 
     let reportWindow = window.open('', '_blank');
     let inferenceListHtml = '';
@@ -277,16 +368,23 @@ function printSchoolAttendanceReport() {
                 ${arrayListHtml || "<p>Completed via digital array builder.</p>"}
             </div>
 
-            <div class="box" style="page-break-inside: avoid;">
-                <h3>Day 1: Science - Digital Animal Research Poster</h3>
+            <div class="box">
+                <h3>Day 1: Science - Animal Research Poster</h3>
                 <p><strong>Student Facts:</strong></p>
                 <p style="background: #f9f9f9; padding: 15px; border: 1px solid #eee; border-radius: 4px;">
-                    ${formattedFacts}
+                    ${factsText.replace(/\n/g, '<br>')}
                 </p>
-                <p><em>Note: The drawing poster was created on the student's tablet and can be viewed by clicking the download link below.</em></p>
-                
-                <!-- NEW: Button to download the drawing as an image file -->
-                <button onclick="window.opener.downloadPosterImage()" style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">⬇ Download Student's Poster Drawing (PNG)</button>
+                <button onclick="window.opener.downloadPosterImage()" style="background: #3498db; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Animal Poster Drawing (PNG)</button>
+            </div>
+
+            <div class="box">
+                <h3>Day 1: Social Studies - What is a Community?</h3>
+                <p><strong>Student Community Ideas & Definition:</strong></p>
+                <p style="background: #f9f9f9; padding: 15px; border: 1px solid #eee; border-radius: 4px;">
+                    ${communityText.replace(/\n/g, '<br>')}
+                </p>
+                <p><strong>Family Discussion Share:</strong> ${sharedChecked ? '✅ Completed and discussed with family member.' : 'Pending'}</p>
+                <button onclick="window.opener.downloadCommunityImage()" style="background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Community Drawing (PNG)</button>
             </div>
 
             <p style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
@@ -302,17 +400,24 @@ function printSchoolAttendanceReport() {
     setTimeout(() => { reportWindow.print(); }, 500);
 }
 
-// NEW: Function to take a snapshot of the drawing canvas and download it
+// Functions to download each canvas drawing independently
 async function downloadPosterImage() {
-    if (!tlDrawInstance) {
-        alert("No drawing found.");
-        return;
-    }
-    // Use the tldraw API to get a data URL of the image
+    if (!tlDrawInstance) { alert("No drawing found."); return; }
     const dataUrl = await tlDrawInstance.getImageUrl();
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = 'Easen_Spicer_Animal_Poster.png'; // Filename
+    link.download = 'Easen_Spicer_Animal_Poster.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+async function downloadCommunityImage() {
+    if (!communityTlInstance) { alert("No community drawing found."); return; }
+    const dataUrl = await communityTlInstance.getImageUrl();
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'Easen_Spicer_Community_Drawing.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
