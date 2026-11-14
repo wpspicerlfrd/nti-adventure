@@ -1,7 +1,7 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Literacy, Math, Science & Social Studies",
+        category: "Integrated Research & Project Design",
         targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: true,
         readingText: "Starfall Firefighter Reader",
@@ -73,13 +73,18 @@ const ntiDaysData = {
                     { text: "B) A single person living entirely alone on a remote island with no buildings.", correct: false }
                 ],
                 evidence: "Social Studies Focus: Identifying different types of communities and important people/places."
+            },
+            {
+                type: "poster-studio",
+                question: "Final Mission: Design your Animal Research Poster! Draw your animal and its habitat, then type out 5 facts about it."
             }
         ]
     },
+    // ... Days 2 & 3 remain unchanged
     2: {
         title: "Day 2: Metropolis Rescue",
         category: "Compound Words & Elapsed Time",
-        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
+        targetMinutes: 60, 
         unlocked: false,
         missions: [
             {
@@ -103,7 +108,7 @@ const ntiDaysData = {
     3: {
         title: "Day 3: Station Summit",
         category: "Nonfiction Text Features & Fractions",
-        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
+        targetMinutes: 60, 
         unlocked: false,
         missions: [
             {
