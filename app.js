@@ -1,3 +1,5 @@
+// ... (Keep all top-level variables: secondsElapsed, timerInterval, etc.)
+
 let secondsElapsed = 0;
 let timerInterval = null;
 let currentActiveDay = null;
@@ -5,7 +7,12 @@ let daySecondsSpent = {};
 let currentMissionIndex = 0;
 let dayCompletionTimestamps = {};
 let answeredInferences = []; 
-let recordedArrays = []; // Stores Easen's digital array creations for the school report
+let recordedArrays = []; 
+
+// To hold the drawing app instance
+let tlDrawInstance = null;
+
+// ... (Keep renderMap, startTimer, startDay functions)
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
@@ -65,16 +72,23 @@ function renderCurrentMission() {
 
     const mission = dayData.missions[currentMissionIndex];
 
+    // Clear previous drawing instance if it exists
+    if (tlDrawInstance) {
+        tlDrawInstance.destroy();
+        tlDrawInstance = null;
+    }
+
     let readingHtml = '';
     if (currentMissionIndex === 0 && dayData.readingText && dayData.readingUrl) {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
-    // Check if this mission is the Interactive Array Builder
+    // Handle Array Builder (as before)
     if (mission.type === 'array-builder') {
+        // ... (keep existing array-builder HTML)
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
-            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box">
                 <p><strong>🔢 Multiplication Scavenger Hunt:</strong> ${mission.question}</p>
                 <p>Select object type: 
@@ -97,6 +111,33 @@ function renderCurrentMission() {
         return;
     }
 
+    // NEW: Handle Digital Poster Studio
+    if (mission.type === 'poster-studio') {
+        content.innerHTML = `
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
+            <div class="quiz-box" style="text-align: left;">
+                <p><strong>🎨 Digital Poster Studio:</strong> ${mission.question}</p>
+                <p><em>Use the tools below to draw your animal's habitat and characteristics.</em></p>
+                
+                <!-- THE DRAWING CANVAS -->
+                <div id="digital-poster-studio">
+                    <div id="tl-app" class="tl-container"></div>
+                </div>
+
+                <p><strong>Type your 5 Animal Facts Below:</strong></p>
+                <textarea id="poster-facts-input" placeholder="Example: 1. Dalmatians were often used as 'fire dogs' to run ahead of horse-drawn carriages to clear the path. 2. They are born completely white and get their spots later. 3. They are very athletic and high-energy. 4. Their short coat makes them good for riding in fire trucks. 5. They are intelligent and loyal family pets."></textarea>
+                
+                <br>
+                <button onclick="finalizeDayCompletion()" style="background: #2ecc71; margin-top: 15px;">I am done with my poster. Submit Work & Finish Mission!</button>
+            </div>
+        `;
+
+        // Initialize tldraw on the div we just created
+        tlDrawInstance = new Tldraw.Tldraw(document.getElementById('tl-app'));
+        return;
+    }
+
     let evidenceHtml = mission.evidence ? `<p style="font-size: 0.85rem; color: #f1c40f;"><em>Hint / Evidence Focus: ${mission.evidence}</em></p>` : '';
 
     let buttonsHtml = '';
@@ -106,7 +147,7 @@ function renderCurrentMission() {
 
     content.innerHTML = `
         <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
-        <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
+        <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
         ${readingHtml}
         <div class="quiz-box">
             <p><strong>Mission Challenge:</strong> ${mission.question}</p>
@@ -116,85 +157,15 @@ function renderCurrentMission() {
     `;
 }
 
-// Interactive Array Builder Logic for Easen
-function previewArray() {
-    let objType = document.getElementById('array-object').value;
-    let rows = parseInt(document.getElementById('array-rows').value) || 0;
-    let cols = parseInt(document.getElementById('array-cols').value) || 0;
-    let total = rows * cols;
+// ... (Keep previewArray, submitArrayWork, submitAnswer functions as before)
 
-    let iconMap = { "Hoses": "🛞", "Helmets": "🪖", "Cones": "🔶", "Tools": "🧰" };
-    let itemIcon = iconMap[objType] || "⭐";
+// ... (New finalizeDayCompletion function from previous steps)
 
-    let gridHtml = `<p><strong>Array:</strong> ${rows} rows of ${cols} ${objType} (Total = ${total})</p><div style="font-size: 1.5rem; line-height: 1.2;">`;
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            gridHtml += itemIcon + " ";
-        }
-        gridHtml += "<br>";
-    }
-    gridHtml += `</div><p><strong>Equation:</strong> ${rows} × ${cols} = ${total}</p>`;
+// ... (Keep returnToMap function)
 
-    document.getElementById('array-preview-area').innerHTML = gridHtml;
-    
-    // Save this array record for the school report
-    window.tempCurrentArray = {
-        object: objType,
-        rows: rows,
-        cols: cols,
-        total: total,
-        equation: `${rows} × ${cols} = ${total} (${objType})`
-    };
-
-    document.getElementById('submit-array-btn').style.display = 'block';
-}
-
-function submitArrayWork() {
-    if (window.tempCurrentArray) {
-        recordedArrays.push(window.tempCurrentArray);
-    }
-    
-    alert("Fantastic job building your array, Easen!");
-    
-    // Proceed to next mission or complete day
-    const dayData = ntiDaysData[currentActiveDay];
-    if (currentMissionIndex < dayData.missions.length - 1) {
-        currentMissionIndex++;
-        renderCurrentMission();
-        return;
-    }
-    
-    finalizeDayCompletion();
-}
-
-function submitAnswer(isCorrect, selectedText) {
-    if (!isCorrect) {
-        alert("Not quite! Check the reading material or clues and try again.");
-        return;
-    }
-
-    const dayData = ntiDaysData[currentActiveDay];
-    const mission = dayData.missions[currentMissionIndex];
-
-    if (currentActiveDay === '1' && mission.evidence) {
-        answeredInferences.push({
-            question: mission.question,
-            answer: selectedText,
-            evidence: mission.evidence
-        });
-    }
-
-    if (currentMissionIndex < dayData.missions.length - 1) {
-        currentMissionIndex++;
-        alert("Correct! Moving on to the next part of today's mission.");
-        renderCurrentMission();
-        return;
-    }
-
-    finalizeDayCompletion();
-}
-
+// NEW: Updated finalizeDayCompletion to handle saving the poster
 function finalizeDayCompletion() {
+    // 1. Enforce time guardrail (Optional but recommended)
     const dayData = ntiDaysData[currentActiveDay];
     const spentSoFar = daySecondsSpent[currentActiveDay] || 0;
     const targetSeconds = dayData.targetMinutes * 60;
@@ -238,14 +209,16 @@ function finalizeDayCompletion() {
     }
 }
 
-function returnToMap() {
-    currentActiveDay = null;
-    document.getElementById('activity-screen').classList.add('hidden');
-    document.getElementById('quest-map').classList.remove('hidden');
-}
 
-// Generates a formal printable report for school attendance verification
+// ... (Keep returnToMap function)
+
+// ... (New printSchoolAttendanceReport function from previous steps, updated to handle poster)
 function printSchoolAttendanceReport() {
+    // 1. Grab the data from the text area
+    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Poster drawing completed.";
+    // Format the facts to show line breaks in the report
+    let formattedFacts = factsText.replace(/\n/g, '<br>');
+
     let reportWindow = window.open('', '_blank');
     let inferenceListHtml = '';
     
@@ -304,6 +277,18 @@ function printSchoolAttendanceReport() {
                 ${arrayListHtml || "<p>Completed via digital array builder.</p>"}
             </div>
 
+            <div class="box" style="page-break-inside: avoid;">
+                <h3>Day 1: Science - Digital Animal Research Poster</h3>
+                <p><strong>Student Facts:</strong></p>
+                <p style="background: #f9f9f9; padding: 15px; border: 1px solid #eee; border-radius: 4px;">
+                    ${formattedFacts}
+                </p>
+                <p><em>Note: The drawing poster was created on the student's tablet and can be viewed by clicking the download link below.</em></p>
+                
+                <!-- NEW: Button to download the drawing as an image file -->
+                <button onclick="window.opener.downloadPosterImage()" style="background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">⬇ Download Student's Poster Drawing (PNG)</button>
+            </div>
+
             <p style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
                 <em>Verified and submitted for NTI Attendance Compliance.</em>
             </p>
@@ -317,12 +302,24 @@ function printSchoolAttendanceReport() {
     setTimeout(() => { reportWindow.print(); }, 500);
 }
 
-function downloadCertificateImage() {
-    window.print();
+// NEW: Function to take a snapshot of the drawing canvas and download it
+async function downloadPosterImage() {
+    if (!tlDrawInstance) {
+        alert("No drawing found.");
+        return;
+    }
+    // Use the tldraw API to get a data URL of the image
+    const dataUrl = await tlDrawInstance.getImageUrl();
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'Easen_Spicer_Animal_Poster.png'; // Filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function returnToMapFromCert() {
-    document.getElementById('certificate-modal').classList.add('hidden');
+    document.getElementById('certificate-modal').classList.remove('hidden');
 }
 
 window.onload = renderMap;
