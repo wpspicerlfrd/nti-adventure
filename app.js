@@ -141,6 +141,7 @@ function renderCurrentMission() {
     const dayData = ntiDaysData[currentActiveDay];
     const content = document.getElementById('activity-content');
     
+    // Explicitly hide the map view and show the activity view
     document.getElementById('quest-map').classList.add('hidden');
     document.getElementById('activity-screen').classList.remove('hidden');
 
