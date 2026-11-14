@@ -141,7 +141,6 @@ function renderCurrentMission() {
     const dayData = ntiDaysData[currentActiveDay];
     const content = document.getElementById('activity-content');
     
-    // Explicitly hide the map view and show the activity view
     document.getElementById('quest-map').classList.add('hidden');
     document.getElementById('activity-screen').classList.remove('hidden');
 
@@ -149,7 +148,7 @@ function renderCurrentMission() {
 
     let readingHtml = '';
     if (currentMissionIndex === 0 && dayData.readingText && dayData.readingUrl) {
-        readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
+        readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank" class="reading-link">${dayData.readingText}</a>.</p>`;
     }
 
     let navControlsHtml = `
