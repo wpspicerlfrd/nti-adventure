@@ -4,7 +4,8 @@ let currentActiveDay = null;
 let daySecondsSpent = {}; 
 let currentMissionIndex = 0;
 let dayCompletionTimestamps = {};
-let answeredInferences = []; // Store student answers for school report
+let answeredInferences = []; 
+let recordedArrays = []; // Stores Easen's digital array creations for the school report
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
@@ -69,6 +70,33 @@ function renderCurrentMission() {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
+    // Check if this mission is the Interactive Array Builder
+    if (mission.type === 'array-builder') {
+        content.innerHTML = `
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today.</em></p>
+            <div class="quiz-box">
+                <p><strong>🔢 Multiplication Scavenger Hunt:</strong> ${mission.question}</p>
+                <p>Select object type: 
+                   <select id="array-object" style="padding: 5px; font-size: 1rem;">
+                       <option value="Hoses">Fire Hoses</option>
+                       <option value="Helmets">Fire Helmets</option>
+                       <option value="Cones">Traffic Cones</option>
+                       <option value="Tools">Rescue Tools</option>
+                   </select>
+                </p>
+                <p>Enter Rows: <input type="number" id="array-rows" value="3" min="1" max="12" style="width: 50px; padding: 5px;"> 
+                   Columns: <input type="number" id="array-cols" value="4" min="1" max="12" style="width: 50px; padding: 5px;">
+                </p>
+                <button onclick="previewArray()" style="background: #3498db; margin-top: 10px;">Preview Array</button>
+                <div id="array-preview-area" style="margin-top: 15px; font-size: 1.2rem; background: #1a1a2e; padding: 15px; border-radius: 8px;"></div>
+                <br>
+                <button onclick="submitArrayWork()" style="background: #2ecc71; display:none;" id="submit-array-btn">Save Array & Finish Mission</button>
+            </div>
+        `;
+        return;
+    }
+
     let evidenceHtml = mission.evidence ? `<p style="font-size: 0.85rem; color: #f1c40f;"><em>Hint / Evidence Focus: ${mission.evidence}</em></p>` : '';
 
     let buttonsHtml = '';
@@ -88,6 +116,57 @@ function renderCurrentMission() {
     `;
 }
 
+// Interactive Array Builder Logic for Easen
+function previewArray() {
+    let objType = document.getElementById('array-object').value;
+    let rows = parseInt(document.getElementById('array-rows').value) || 0;
+    let cols = parseInt(document.getElementById('array-cols').value) || 0;
+    let total = rows * cols;
+
+    let iconMap = { "Hoses": "🛞", "Helmets": "🪖", "Cones": "🔶", "Tools": "🧰" };
+    let itemIcon = iconMap[objType] || "⭐";
+
+    let gridHtml = `<p><strong>Array:</strong> ${rows} rows of ${cols} ${objType} (Total = ${total})</p><div style="font-size: 1.5rem; line-height: 1.2;">`;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            gridHtml += itemIcon + " ";
+        }
+        gridHtml += "<br>";
+    }
+    gridHtml += `</div><p><strong>Equation:</strong> ${rows} × ${cols} = ${total}</p>`;
+
+    document.getElementById('array-preview-area').innerHTML = gridHtml;
+    
+    // Save this array record for the school report
+    window.tempCurrentArray = {
+        object: objType,
+        rows: rows,
+        cols: cols,
+        total: total,
+        equation: `${rows} × ${cols} = ${total} (${objType})`
+    };
+
+    document.getElementById('submit-array-btn').style.display = 'block';
+}
+
+function submitArrayWork() {
+    if (window.tempCurrentArray) {
+        recordedArrays.push(window.tempCurrentArray);
+    }
+    
+    alert("Fantastic job building your array, Easen!");
+    
+    // Proceed to next mission or complete day
+    const dayData = ntiDaysData[currentActiveDay];
+    if (currentMissionIndex < dayData.missions.length - 1) {
+        currentMissionIndex++;
+        renderCurrentMission();
+        return;
+    }
+    
+    finalizeDayCompletion();
+}
+
 function submitAnswer(isCorrect, selectedText) {
     if (!isCorrect) {
         alert("Not quite! Check the reading material or clues and try again.");
@@ -97,7 +176,6 @@ function submitAnswer(isCorrect, selectedText) {
     const dayData = ntiDaysData[currentActiveDay];
     const mission = dayData.missions[currentMissionIndex];
 
-    // Save inference response if it's part of Day 1's character study
     if (currentActiveDay === '1' && mission.evidence) {
         answeredInferences.push({
             question: mission.question,
@@ -113,19 +191,24 @@ function submitAnswer(isCorrect, selectedText) {
         return;
     }
 
+    finalizeDayCompletion();
+}
+
+function finalizeDayCompletion() {
+    const dayData = ntiDaysData[currentActiveDay];
     const spentSoFar = daySecondsSpent[currentActiveDay] || 0;
     const targetSeconds = dayData.targetMinutes * 60;
 
     if (spentSoFar < targetSeconds) {
         let remainingMins = Math.ceil((targetSeconds - spentSoFar) / 60);
-        alert(`Great job finishing all the questions! However, Oldham County NTI guidelines require 60-90 minutes of home learning today. Please spend about ${remainingMins} more minutes reviewing the story or doing extra practice before completing this mission!`);
+        alert(`Great job finishing all the tasks! However, Oldham County NTI guidelines require 60-90 minutes of home learning today[cite: 2]. Please spend about ${remainingMins} more minutes reviewing or doing extra practice before completing this mission!`);
         return;
     }
 
     const completionTimeStr = new Date().toLocaleString();
     dayCompletionTimestamps[currentActiveDay] = completionTimeStr;
 
-    alert(`Fantastic job, Cadet! Mission complete for ${dayData.title} at ${completionTimeStr}!`);
+    alert(`Fantastic job, Easen! Mission complete for ${dayData.title} at ${completionTimeStr}!`);
     dayData.completed = true;
 
     const nextDayKey = String(Number(currentActiveDay) + 1);
@@ -168,7 +251,7 @@ function printSchoolAttendanceReport() {
     
     answeredInferences.forEach((inf, idx) => {
         inferenceListHtml += `
-            <div style="margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+            <div style="margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
                 <p><strong>Inference ${idx + 1}:</strong> ${inf.question}</p>
                 <p><strong>Student Answer:</strong> ${inf.answer}</p>
                 <p><strong>Supporting Text Evidence:</strong> <em>${inf.evidence}</em></p>
@@ -176,10 +259,15 @@ function printSchoolAttendanceReport() {
         `;
     });
 
+    let arrayListHtml = '';
+    recordedArrays.forEach((arr, idx) => {
+        arrayListHtml += `<p>Array ${idx + 1}: <strong>${arr.equation}</strong> (${arr.rows} rows of ${arr.cols} ${arr.object})</p>`;
+    });
+
     let htmlContent = `
         <html>
         <head>
-            <title>Oldham County NTI Attendance & Assignment Report - EJ Spicer</title>
+            <title>Oldham County NTI Attendance & Assignment Report - Easen Spicer</title>
             <style>
                 body { font-family: Arial, sans-serif; padding: 30px; color: #000; line-height: 1.5; }
                 h1, h2 { text-align: center; color: #2c3e50; }
@@ -199,7 +287,7 @@ function printSchoolAttendanceReport() {
     `;
 
     Object.keys(dayCompletionTimestamps).forEach(dKey => {
-        htmlContent += `<li>${ntiDaysData[dKey].title}: Completed on ${dayCompletionTimestamps[dKey]} (Meets 60-90 min daily requirement)</li>`;
+        htmlContent += `<li>${ntiDaysData[dKey].title}: Completed on ${dayCompletionTimestamps[dKey]} (Meets 60-90 min daily requirement)[cite: 2]</li>`;
     });
 
     htmlContent += `
@@ -209,6 +297,11 @@ function printSchoolAttendanceReport() {
             <div class="box">
                 <h3>Day 1: Character Inferences & Text Evidence Analysis</h3>
                 ${inferenceListHtml}
+            </div>
+
+            <div class="box">
+                <h3>Day 1: Multiplication Scavenger Hunt Arrays</h3>
+                ${arrayListHtml || "<p>Completed via digital array builder.</p>"}
             </div>
 
             <p style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
