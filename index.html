@@ -30,18 +30,22 @@
         </section>
 
         <!-- Certificate Screen -->
-        <div id="certificate-modal" class="hidden">
-            <div class="cert-box">
-                <h2>🌟 NTI CERTIFICATE OF COMPLETION 🌟</h2>
-                <p>This certifies that</p>
-                <h3 id="cert-name">Cadet</h3>
-                <p>successfully completed all NTI Fire & Rescue Missions!</p>
-                <p><strong>Total Time:</strong> <span id="cert-time">0 min</span></p>
-                <p><strong>Completed On:</strong> November 13, 2026</p>
-                <div id="daily-stamps" style="font-size: 0.9rem; margin: 10px 0; text-align: left;"></div>
-                <button onclick="emailCertificateToDad()" style="background: #3498db;">📧 Email Completion Report</button>
-                <br>
-                <button onclick="takeScreenshotAction()">📸 Take Screenshot / Done</button>
+<div id="certificate-modal" class="hidden">
+    <div class="cert-box" id="certificate-print-area">
+        <h2>🌟 NTI CERTIFICATE OF COMPLETION 🌟</h2>
+        <p>This certifies that</p>
+        <h3>EJ Spicer</h3>
+        <p>successfully completed all NTI Fire & Rescue Missions!</p>
+        <p><strong>Total Time:</strong> <span id="cert-time">0 min</span></p>
+        <p><strong>Completed On:</strong> November 13, 2026</p>
+        <div id="daily-stamps" style="font-size: 0.9rem; margin: 10px 0; text-align: left;"></div>
+        
+        <!-- Action Buttons -->
+        <button onclick="downloadCertificateImage()" style="background: #27ae60;">📥 Download Certificate</button>
+        <br>
+        <button onclick="sendBackgroundReport()" style="background: #2980b9;">📨 Send Progress to Dad's Email</button>
+        <br>
+        <button onclick="returnToMapFromCert()" style="background: #7f8c8d;">Close</button>
             </div>
         </div>
     </div>
