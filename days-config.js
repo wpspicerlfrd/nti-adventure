@@ -4,53 +4,53 @@ const ntiDaysData = {
         category: "Advanced Literacy & Character Inferences",
         targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: true,
-        readingText: "The courageous fire truck story & community helpers",
-        readingUrl: "https://www.gutenberg.org/files/25555/25555-h/25555-h.htm",
+        readingText: "Starfall Firefighter Reader",
+        readingUrl: "https://teach.starfall.com/materials/books/grade23/SB0608_Firefighter_web.pdf?77222d06ef2b35a55eb217bdb2540e3d",
         missions: [
             {
                 type: "quiz",
-                question: "Inference 1 (Character Dedication): When the midnight alarm sounds, why do the fire engines immediately roll out without hesitation?",
+                question: "Inference 1 (Character Dedication): Based on how the firefighters immediately respond when the alarm sounds in the story, what can we infer about their primary goal?",
                 options: [
-                    { text: "A) They prioritize community safety above their own comfort and rest.", correct: true },
-                    { text: "B) They are hoping to win a morning parade ribbon.", correct: false }
+                    { text: "A) They put the safety of the community above everything else.", correct: true },
+                    { text: "B) They are trying to finish their shift as quickly as possible to go home.", correct: false }
                 ],
-                evidence: "Supporting Detail: The text highlights their prompt response to emergency calls during dark, freezing conditions to protect citizens."
+                evidence: "Supporting Detail: The text and illustrations show them dropping everything instantly to gear up and head out into the community."
             },
             {
                 type: "quiz",
-                question: "Inference 2 (Teamwork & Morale): How do the veteran engines treat newer or struggling vehicles in the station?",
+                question: "Inference 2 (Teamwork): How do the firefighters in the book demonstrate that teamwork is essential when handling an emergency?",
                 options: [
-                    { text: "A) They offer encouragement, guidance, and share the workload.", correct: true },
-                    { text: "B) They ignore them and leave them stranded in the bay.", correct: false }
+                    { text: "A) Each crew member has a specific, trusted job that helps the team work together seamlessly.", correct: true },
+                    { text: "B) One person handles the entire emergency while the others watch.", correct: false }
                 ],
-                evidence: "Supporting Detail: Experienced crew members guide younger units through maintenance tasks and emergency drills."
+                evidence: "Supporting Detail: Different crew members operate the hoses, drive the truck, and handle equipment cooperatively."
             },
             {
                 type: "quiz",
-                question: "Inference 3 (Overcoming Adversity): What can we infer about a vehicle's character when it gets covered in soot and mud during a tough fire?",
+                question: "Inference 3 (Overcoming Adversity): What can we infer about the physical demands and challenges firefighters face based on their gear and equipment?",
                 options: [
-                    { text: "A) It demonstrates fearless hard work and total commitment to the job.", correct: true },
-                    { text: "B) It means the vehicle made too many driving errors.", correct: false }
+                    { text: "A) The work is heavy, hot, and requires specialized protection to stay safe.", correct: true },
+                    { text: "B) It is light work that requires very little physical effort.", correct: false }
                 ],
-                evidence: "Supporting Detail: Heavy grime and soot indicate direct engagement in aggressive firefighting and rescue operations."
+                evidence: "Supporting Detail: Heavy turnout gear and specialized tools are necessary to protect them from extreme environments."
             },
             {
                 type: "quiz",
-                question: "Inference 4 (Equipment Readiness): Why does the crew spend hours polishing chrome and checking water lines after a shift?",
+                question: "Inference 4 (Equipment Readiness): Why do firefighters spend time inspecting and maintaining their truck and tools?",
                 options: [
-                    { text: "A) They understand that preparedness saves lives when the next emergency strikes.", correct: true },
-                    { text: "B) They just want the garage to look neat for visitors.", correct: false }
+                    { text: "A) They know that reliable equipment is vital to saving lives when seconds count.", correct: true },
+                    { text: "B) They do it just to pass the time between alarms.", correct: false }
                 ],
-                evidence: "Supporting Detail: Regular maintenance checks ensure tools and pumps operate flawlessly under high-pressure conditions."
+                evidence: "Supporting Detail: Regular gear checks ensure everything operates without failure during high-stress calls."
             },
             {
                 type: "quiz",
-                question: "Inference 5 (Community Trust): Why do local residents wave and cheer when the engines drive past?",
+                question: "Inference 5 (Community Trust): Why do people in the neighborhood look up to and trust the firefighters portrayed in the reader?",
                 options: [
-                    { text: "A) They recognize the bravery and reliability of their local protectors.", correct: true },
-                    { text: "B) They like the loud sound of the air horns.", correct: false }
+                    { text: "A) Because they are dependable protectors who show up when help is needed most.", correct: true },
+                    { text: "B) Because they drive the biggest vehicles in town.", correct: false }
                 ],
-                evidence: "Supporting Detail: Citizens place deep trust in the station to keep their neighborhood safe day and night."
+                evidence: "Supporting Detail: The community relies on their training and constant readiness to keep homes and families safe."
             },
             {
                 type: "quiz",
@@ -65,7 +65,7 @@ const ntiDaysData = {
     2: {
         title: "Day 2: Metropolis Rescue",
         category: "Compound Words & Elapsed Time",
-        targetMinutes: 60, // Oldham County NTI minimum home learning time
+        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: false,
         missions: [
             {
@@ -89,7 +89,7 @@ const ntiDaysData = {
     3: {
         title: "Day 3: Station Summit",
         category: "Nonfiction Text Features & Fractions",
-        targetMinutes: 60, // Oldham County NTI minimum home learning time
+        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: false,
         missions: [
             {
