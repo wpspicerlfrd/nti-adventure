@@ -6,6 +6,7 @@ let currentMissionIndex = 0;
 let dayCompletionTimestamps = {};
 let answeredInferences = []; 
 let recordedArrays = []; 
+let activeDayMissions = []; // Holds the randomized missions for the current session
 
 let currentContext = null;
 let isDrawing = false;
@@ -55,10 +56,50 @@ function startTimer() {
     }
 }
 
+// Fisher-Yates shuffle helper to randomize arrays and answers
+function shuffleArray(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
 function startDay(dayKey) {
     startTimer();
     currentActiveDay = dayKey;
     currentMissionIndex = 0; 
+
+    const dayData = ntiDaysData[dayKey];
+
+    // If day has a questionBank (like Day 1), pick 5 random questions and shuffle their options!
+    if (dayData.questionBank && dayData.questionBank.length > 0) {
+        let shuffledQuestions = shuffleArray(dayData.questionBank).slice(0, 5);
+        
+        // Shuffle the answer options for each selected question so correct answers aren't always 'A'
+        let processedQuizMissions = shuffledQuestions.map(q => {
+            return {
+                type: "quiz",
+                question: q.question,
+                options: shuffleArray(q.options),
+                evidence: q.evidence,
+                helpHint: q.helpHint
+            };
+        });
+
+        // Combine the 5 random quiz missions with the interactive studio/array missions
+        activeDayMissions = [...processedQuizMissions, ...(dayData.missions || [])];
+    } else {
+        // For Days 2 & 3, use standard missions with shuffled options
+        activeDayMissions = (dayData.missions || []).map(m => {
+            if (m.options) {
+                return { ...m, options: shuffleArray(m.options) };
+            }
+            return m;
+        });
+    }
+
     renderCurrentMission();
 }
 
@@ -69,14 +110,13 @@ function renderCurrentMission() {
     document.getElementById('quest-map').classList.add('hidden');
     document.getElementById('activity-screen').classList.remove('hidden');
 
-    const mission = dayData.missions[currentMissionIndex];
+    const mission = activeDayMissions[currentMissionIndex];
 
     let readingHtml = '';
     if (currentMissionIndex === 0 && dayData.readingText && dayData.readingUrl) {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
-    // Helper button HTML generator for hints
     let hintButtonHtml = mission.helpHint ? `
         <button onclick="showChiefHint()" style="background: #f39c12; color: #fff; margin-bottom: 15px; border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: pointer;">
             💡 Need Help? (Chief's Hint)
@@ -89,7 +129,7 @@ function renderCurrentMission() {
     // Handle Array Builder
     if (mission.type === 'array-builder') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box">
                 ${hintButtonHtml}
@@ -117,7 +157,7 @@ function renderCurrentMission() {
     // Handle Science Animal Poster Studio
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
@@ -155,7 +195,7 @@ function renderCurrentMission() {
     // Handle Social Studies Community Canvas
     if (mission.type === 'community-canvas') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
@@ -202,7 +242,7 @@ function renderCurrentMission() {
     });
 
     content.innerHTML = `
-        <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
+        <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
         <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
         ${readingHtml}
         <div class="quiz-box">
@@ -214,7 +254,6 @@ function renderCurrentMission() {
     `;
 }
 
-// Function to toggle the Chief's Hint box
 function showChiefHint() {
     const hintBox = document.getElementById('chief-hint-box');
     if (hintBox) {
@@ -222,7 +261,6 @@ function showChiefHint() {
     }
 }
 
-// --- HTML5 Tablet Drawing Engine Logic ---
 function initDrawingCanvas(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -320,7 +358,6 @@ function clearCanvas(canvasId) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Array builder logic
 function previewArray() {
     let objType = document.getElementById('array-object').value;
     let rows = parseInt(document.getElementById('array-rows').value) || 0;
@@ -366,8 +403,7 @@ function submitAnswer(isCorrect, selectedText) {
         return;
     }
 
-    const dayData = ntiDaysData[currentActiveDay];
-    const mission = dayData.missions[currentMissionIndex];
+    const mission = activeDayMissions[currentMissionIndex];
 
     if (currentActiveDay === '1' && mission.evidence) {
         answeredInferences.push({
@@ -387,8 +423,7 @@ function advanceFromPoster() {
 }
 
 function advanceMission() {
-    const dayData = ntiDaysData[currentActiveDay];
-    if (currentMissionIndex < dayData.missions.length - 1) {
+    if (currentMissionIndex < activeDayMissions.length - 1) {
         currentMissionIndex++;
         renderCurrentMission();
     }
@@ -434,7 +469,6 @@ function finalizeDayCompletion() {
         stampsHtml += "</ul>";
         document.getElementById('daily-stamps').innerHTML = stampsHtml;
 
-        document.getElementById('certificate-modal').classList.format = 'hidden'; // Fixed
         document.getElementById('certificate-modal').classList.remove('hidden');
     }
 }
@@ -446,7 +480,7 @@ function returnToMap() {
 }
 
 function printSchoolAttendanceReport() {
-    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input'].value : "Completed.";
+    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Completed.";
     let communityText = document.getElementById('community-definition-input') ? document.getElementById('community-definition-input').value : "Completed.";
     let sharedChecked = document.getElementById('shared-checkbox') ? document.getElementById('shared-checkbox').checked : true;
 
