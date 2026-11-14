@@ -6,7 +6,7 @@ let currentMissionIndex = 0;
 let dayCompletionTimestamps = {};
 let answeredInferences = []; 
 let recordedArrays = []; 
-let activeDayMissions = []; // Holds the randomized missions for the current session
+let activeDayMissions = []; 
 
 let currentContext = null;
 let isDrawing = false;
@@ -56,7 +56,6 @@ function startTimer() {
     }
 }
 
-// Fisher-Yates shuffle helper to randomize arrays and answers
 function shuffleArray(array) {
     let arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -73,11 +72,9 @@ function startDay(dayKey) {
 
     const dayData = ntiDaysData[dayKey];
 
-    // If day has a questionBank (like Day 1), pick 5 random questions and shuffle their options!
     if (dayData.questionBank && dayData.questionBank.length > 0) {
         let shuffledQuestions = shuffleArray(dayData.questionBank).slice(0, 5);
         
-        // Shuffle the answer options for each selected question so correct answers aren't always 'A'
         let processedQuizMissions = shuffledQuestions.map(q => {
             return {
                 type: "quiz",
@@ -88,10 +85,8 @@ function startDay(dayKey) {
             };
         });
 
-        // Combine the 5 random quiz missions with the interactive studio/array missions
         activeDayMissions = [...processedQuizMissions, ...(dayData.missions || [])];
     } else {
-        // For Days 2 & 3, use standard missions with shuffled options
         activeDayMissions = (dayData.missions || []).map(m => {
             if (m.options) {
                 return { ...m, options: shuffleArray(m.options) };
@@ -117,6 +112,16 @@ function renderCurrentMission() {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
+    // Navigation bar (Back & Next controls)
+    let navControlsHtml = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <button onclick="prevMission()" ${currentMissionIndex === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : 'style="background: #7f8-c8d; background-color: #7f8c8d; color: white;"'}>
+                ⬅️ Previous Step
+            </button>
+            <span style="align-self: center; font-size: 0.9rem; color: #bdc3c7;">Step ${currentMissionIndex + 1} of ${activeDayMissions.length}</span>
+        </div>
+    `;
+
     let hintButtonHtml = mission.helpHint ? `
         <button onclick="showChiefHint()" style="background: #f39c12; color: #fff; margin-bottom: 15px; border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: pointer;">
             💡 Need Help? (Chief's Hint)
@@ -129,7 +134,8 @@ function renderCurrentMission() {
     // Handle Array Builder
     if (mission.type === 'array-builder') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
+            <h2>${dayData.title}</h2>
+            ${navControlsHtml}
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box">
                 ${hintButtonHtml}
@@ -157,7 +163,8 @@ function renderCurrentMission() {
     // Handle Science Animal Poster Studio
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
+            <h2>${dayData.title}</h2>
+            ${navControlsHtml}
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
@@ -195,7 +202,8 @@ function renderCurrentMission() {
     // Handle Social Studies Community Canvas
     if (mission.type === 'community-canvas') {
         content.innerHTML = `
-            <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
+            <h2>${dayData.title}</h2>
+            ${navControlsHtml}
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
                 ${hintButtonHtml}
@@ -242,7 +250,8 @@ function renderCurrentMission() {
     });
 
     content.innerHTML = `
-        <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${activeDayMissions.length})</h2>
+        <h2>${dayData.title}</h2>
+        ${navControlsHtml}
         <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
         ${readingHtml}
         <div class="quiz-box">
@@ -425,6 +434,14 @@ function advanceFromPoster() {
 function advanceMission() {
     if (currentMissionIndex < activeDayMissions.length - 1) {
         currentMissionIndex++;
+        renderCurrentMission();
+    }
+}
+
+// Navigation back function
+function prevMission() {
+    if (currentMissionIndex > 0) {
+        currentMissionIndex--;
         renderCurrentMission();
     }
 }
