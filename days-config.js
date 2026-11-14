@@ -4,8 +4,8 @@ const ntiDaysData = {
         category: "Advanced Literacy & Multi-Step Math",
         targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: true,
-        readingText: "Nate the Great and the Missing Case (Adapted Dispatch)",
-        readingUrl: "https://bookspring.org/wp-content/uploads/2021/05/41354-billy-to-the-rescue.pdf",
+        readingText: "The courageous fire truck story & community helpers",
+        readingUrl: "https://www.gutenberg.org/files/25555/25555-h/25555-h.htm", // Updated public-domain early reader text link
         missions: [
             {
                 type: "quiz",
@@ -28,7 +28,7 @@ const ntiDaysData = {
     2: {
         title: "Day 2: Metropolis Rescue",
         category: "Compound Words & Elapsed Time",
-        targetMinutes: 60,
+        targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: false,
         missions: [
             {
@@ -52,7 +52,7 @@ const ntiDaysData = {
     3: {
         title: "Day 3: Station Summit",
         category: "Nonfiction Text Features & Fractions",
-        targetMinutes: 60,
+        targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: false,
         missions: [
             {
