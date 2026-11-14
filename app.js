@@ -17,6 +17,7 @@ let toolMode = "pen";
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
+    if (!gridContainer) return;
     gridContainer.innerHTML = '';
 
     Object.keys(ntiDaysData).forEach((key) => {
@@ -69,15 +70,15 @@ function toggleTimer() {
 
     if (isTimerPaused) {
         btn.innerText = "▶️ Resume";
-        btn.style.backgroundColor = "#16a34a"; // Green play button when paused
+        btn.style.backgroundColor = "#16a34a";
     } else {
         btn.innerText = "⏸️ Pause";
-        btn.style.backgroundColor = "#dc2626"; // Red pause button when running
+        btn.style.backgroundColor = "#dc2626";
     }
 }
 
 function parentPreviewReport() {
-    let pinEntered = prompt("Enter Parent PIN");
+    let pinEntered = prompt("Enter Parent PIN:");
     if (pinEntered === "53799") {
         if (!document.getElementById('cert-time').innerText || document.getElementById('cert-time').innerText === "0 min") {
             document.getElementById('cert-time').innerText = "65 min (Preview Mode)";
