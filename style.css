@@ -71,3 +71,37 @@ h1 { margin: 0; font-size: 1.5rem; }
 }
 .quiz-box { background: #0f3460; padding: 20px; border-radius: 10px; margin-top: 15px; text-align: left; }
 .quiz-box button { display: block; width: 100%; margin: 10px 0; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+
+/* Styles for the Digital Poster Studio */
+#digital-poster-studio {
+    width: 100%;
+    height: 70vh; /* Takes up 70% of the screen height */
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    border: 5px solid #f1c40f;
+    margin-bottom: 20px;
+}
+
+/* The tldraw container needs specific positioning */
+.tl-container {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+}
+
+/* Style for the text input area inside the quiz-box for facts */
+#poster-facts-input {
+    width: 90%;
+    height: 150px;
+    margin-top: 10px;
+    padding: 15px;
+    font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    font-size: 1.1rem;
+    border: 3px solid #3498db;
+    border-radius: 8px;
+    resize: none; /* Prevent manual resizing */
+}
