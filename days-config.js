@@ -1,19 +1,56 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Advanced Literacy & Multi-Step Math",
+        category: "Advanced Literacy & Character Inferences",
         targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: true,
         readingText: "The courageous fire truck story & community helpers",
-        readingUrl: "https://www.gutenberg.org/files/25555/25555-h/25555-h.htm", // Updated public-domain early reader text link
+        readingUrl: "https://www.gutenberg.org/files/25555/25555-h/25555-h.htm",
         missions: [
             {
                 type: "quiz",
-                question: "Part 1 (Context Clues): The text states, 'The alarm clattered loudly, and the crew scrambled toward the bay.' Based on this, what does the word 'scrambled' most likely mean?",
+                question: "Inference 1 (Character Dedication): When the midnight alarm sounds, why do the fire engines immediately roll out without hesitation?",
                 options: [
-                    { text: "A) Moved quickly and in a hurried way", correct: true },
-                    { text: "B) Walked slowly and ate breakfast", correct: false }
-                ]
+                    { text: "A) They prioritize community safety above their own comfort and rest.", correct: true },
+                    { text: "B) They are hoping to win a morning parade ribbon.", correct: false }
+                ],
+                evidence: "Supporting Detail: The text highlights their prompt response to emergency calls during dark, freezing conditions to protect citizens."
+            },
+            {
+                type: "quiz",
+                question: "Inference 2 (Teamwork & Morale): How do the veteran engines treat newer or struggling vehicles in the station?",
+                options: [
+                    { text: "A) They offer encouragement, guidance, and share the workload.", correct: true },
+                    { text: "B) They ignore them and leave them stranded in the bay.", correct: false }
+                ],
+                evidence: "Supporting Detail: Experienced crew members guide younger units through maintenance tasks and emergency drills."
+            },
+            {
+                type: "quiz",
+                question: "Inference 3 (Overcoming Adversity): What can we infer about a vehicle's character when it gets covered in soot and mud during a tough fire?",
+                options: [
+                    { text: "A) It demonstrates fearless hard work and total commitment to the job.", correct: true },
+                    { text: "B) It means the vehicle made too many driving errors.", correct: false }
+                ],
+                evidence: "Supporting Detail: Heavy grime and soot indicate direct engagement in aggressive firefighting and rescue operations."
+            },
+            {
+                type: "quiz",
+                question: "Inference 4 (Equipment Readiness): Why does the crew spend hours polishing chrome and checking water lines after a shift?",
+                options: [
+                    { text: "A) They understand that preparedness saves lives when the next emergency strikes.", correct: true },
+                    { text: "B) They just want the garage to look neat for visitors.", correct: false }
+                ],
+                evidence: "Supporting Detail: Regular maintenance checks ensure tools and pumps operate flawlessly under high-pressure conditions."
+            },
+            {
+                type: "quiz",
+                question: "Inference 5 (Community Trust): Why do local residents wave and cheer when the engines drive past?",
+                options: [
+                    { text: "A) They recognize the bravery and reliability of their local protectors.", correct: true },
+                    { text: "B) They like the loud sound of the air horns.", correct: false }
+                ],
+                evidence: "Supporting Detail: Citizens place deep trust in the station to keep their neighborhood safe day and night."
             },
             {
                 type: "quiz",
