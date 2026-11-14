@@ -77,7 +77,7 @@ function toggleTimer() {
 }
 
 function parentPreviewReport() {
-    let pinEntered = prompt("Enter Parent PIN (53799):");
+    let pinEntered = prompt("Enter Parent PIN");
     if (pinEntered === "53799") {
         if (!document.getElementById('cert-time').innerText || document.getElementById('cert-time').innerText === "0 min") {
             document.getElementById('cert-time').innerText = "65 min (Preview Mode)";
