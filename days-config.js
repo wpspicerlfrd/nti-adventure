@@ -1,7 +1,7 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Integrated Research & Project Design",
+        category: "Integrated Research, Math & Community Study",
         targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: true,
         readingText: "Starfall Firefighter Reader",
@@ -66,21 +66,15 @@ const ntiDaysData = {
                 evidence: "Science Focus: Animal habitat, traits, characteristics, and environmental interaction."
             },
             {
-                type: "quiz",
-                question: "Social Studies (What is a Community?): Which of these best defines a 'community' like your local neighborhood or fire district?",
-                options: [
-                    { text: "A) A group of people living and working together in the same area who help and rely on each other.", correct: true },
-                    { text: "B) A single person living entirely alone on a remote island with no buildings.", correct: false }
-                ],
-                evidence: "Social Studies Focus: Identifying different types of communities and important people/places."
+                type: "poster-studio",
+                question: "Science Poster: Design your Animal Research Poster! Draw your animal and its habitat, then type out 5 facts about it."
             },
             {
-                type: "poster-studio",
-                question: "Final Mission: Design your Animal Research Poster! Draw your animal and its habitat, then type out 5 facts about it."
+                type: "community-canvas",
+                question: "Social Studies - What is a Community?: Define your community, draw important community places and people (like your neighborhood and fire station), and share it with a family member!"
             }
         ]
     },
-    // ... Days 2 & 3 remain unchanged
     2: {
         title: "Day 2: Metropolis Rescue",
         category: "Compound Words & Elapsed Time",
