@@ -24,6 +24,14 @@
         <section id="quest-map" class="view">
             <h1>🔥 Fire & Rescue NTI Academy</h1>
             <p>Select your active mission below to complete your daily Oldham County NTI requirements (60–90 minutes daily).</p>
+            
+            <!-- Parent Preview Test Button -->
+            <div style="margin: 15px 0;">
+                <button onclick="parentPreviewReport()" style="background: #8e44ad; color: white; padding: 10px 18px; border: 2px solid #ffffff; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                    🔒 Parent Preview Report (PIN: 53799)
+                </button>
+            </div>
+
             <div id="island-grid-container" class="grid-container">
                 <!-- Dynamically populated by app.js -->
             </div>
@@ -46,9 +54,9 @@
             <p><strong>Total Time Logged:</strong> <span id="cert-time">0 min</span></p>
             <div id="daily-stamps"></div>
             <br>
-            <button onclick="printSchoolAttendanceReport()" style="background: #2ecc71; padding: 12px 20px; font-size: 1.1rem;">🖨️ Print / Save Formal School Attendance Report</button>
+            <button onclick="printSchoolAttendanceReport()" style="background: #2ecc71; padding: 12px 20px; font-size: 1.1rem; color: #ffffff; border: 2px solid #ffffff; border-radius: 6px; font-weight: bold;">🖨️ Print / Save Formal School Attendance Report</button>
             <br><br>
-            <button onclick="returnToMapFromCert()" style="background: #3498db;">Close & Return to Map</button>
+            <button onclick="returnToMapFromCert()" style="background: #3498db; color: #ffffff; border: 2px solid #ffffff; border-radius: 6px; padding: 8px 16px; font-weight: bold;">Close & Return to Map</button>
         </div>
     </div>
 
