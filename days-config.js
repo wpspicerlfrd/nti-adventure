@@ -6,7 +6,6 @@ const ntiDaysData = {
         unlocked: true,
         readingText: "Billy to the Rescue",
         readingUrl: "https://bookspring.org/wp-content/uploads/2021/05/41354-billy-to-the-rescue.pdf",
-        // Multi-part challenges for Day 1
         missions: [
             {
                 type: "quiz",
@@ -18,7 +17,7 @@ const ntiDaysData = {
             },
             {
                 type: "quiz",
-                question: "Part 2 (Math Arrays): Chief station has 12 new fire hoses to organize into storage racks. Which multiplication array shows 12 items?",
+                question: "Part 2 (Math Arrays): The station has 12 new fire hoses to organize into storage racks. Which multiplication array shows 12 items?",
                 options: [
                     { text: "A) 3 rows of 4 hoses (3 x 4 = 12)", correct: true },
                     { text: "B) 5 rows of 2 hoses (5 x 2 = 10)", correct: false }
