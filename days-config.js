@@ -1,7 +1,7 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Literacy Inferences & Multiplication Scavenger Hunt",
+        category: "Literacy, Math, Science & Social Studies",
         targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: true,
         readingText: "Starfall Firefighter Reader",
@@ -54,7 +54,25 @@ const ntiDaysData = {
             },
             {
                 type: "array-builder",
-                question: "Math Scavenger Hunt: Build arrays to total 12 using station items (e.g., 3 rows of 4, or 4 rows of 3), then type your matching multiplication equation!"
+                question: "Math Scavenger Hunt: Gather twelve (12) items (or choose station items) and create arrays to total 12. Record your rows, columns, and multiplication equations!"
+            },
+            {
+                type: "quiz",
+                question: "Science (Animal Research): If you research a fire station search-and-rescue K9 dog, which set of 5 facts correctly describes its habitat and traits?",
+                options: [
+                    { text: "A) Lives at the firehouse/homes, has an incredible sense of smell, eats high-protein dog food, helps track lost hikers, and wears a safety vest.", correct: true },
+                    { text: "B) Lives underwater in coral reefs, swims with fins, eats microscopic algae, sleeps in shells, and changes color.", correct: false }
+                ],
+                evidence: "Science Focus: Animal habitat, traits, characteristics, and environmental interaction."
+            },
+            {
+                type: "quiz",
+                question: "Social Studies (What is a Community?): Which of these best defines a 'community' like your local neighborhood or fire district?",
+                options: [
+                    { text: "A) A group of people living and working together in the same area who help and rely on each other.", correct: true },
+                    { text: "B) A single person living entirely alone on a remote island with no buildings.", correct: false }
+                ],
+                evidence: "Social Studies Focus: Identifying different types of communities and important people/places."
             }
         ]
     },
@@ -98,7 +116,7 @@ const ntiDaysData = {
             },
             {
                 type: "quiz",
-                question: "Part 2 (Fractions): The station captain cut a firehouse pizza into 8 equal slices. Grid cut into 8 equal slices. What fraction of the pizza is left?",
+                question: "Part 2 (Fractions): The station captain cut a firehouse pizza into 8 equal slices. The crew ate 6 slices. What fraction of the pizza is left?",
                 options: [
                     { text: "A) 2/8 (or 1/4)", correct: true },
                     { text: "B) 6/8", correct: false }
