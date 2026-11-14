@@ -373,7 +373,7 @@ function previewArray() {
     let cols = parseInt(document.getElementById('array-cols').value) || 0;
     let total = rows * cols;
 
-    let iconMap = { "Hoses": "🛞", "Helmets": "🪖", "Cones": "🔶", "Tools": "🧰" };
+    let iconMap = { "Hoses": "🚒🌀💦", "Helmets": "⛑️", "Axes": "🪓", "Extinguisher": "🧯" };
     let itemIcon = iconMap[objType] || "⭐";
 
     let gridHtml = `<p><strong>Array:</strong> ${rows} rows of ${cols} ${objType} (Total = ${total})</p><div style="font-size: 1.5rem; line-height: 1.2;">`;
