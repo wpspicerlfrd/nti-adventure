@@ -7,12 +7,11 @@ let dayCompletionTimestamps = {};
 let answeredInferences = []; 
 let recordedArrays = []; 
 
-// Active drawing state trackers
 let currentContext = null;
 let isDrawing = false;
 let brushColor = "#000000";
 let brushSize = 5;
-let toolMode = "pen"; // 'pen', 'highlighter', 'eraser'
+let toolMode = "pen"; 
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
@@ -77,12 +76,23 @@ function renderCurrentMission() {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
     }
 
+    // Helper button HTML generator for hints
+    let hintButtonHtml = mission.helpHint ? `
+        <button onclick="showChiefHint()" style="background: #f39c12; color: #fff; margin-bottom: 15px; border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: pointer;">
+            💡 Need Help? (Chief's Hint)
+        </button>
+        <div id="chief-hint-box" style="display:none; background: #2c3e50; border-left: 5px solid #f39c12; padding: 12px; margin-bottom: 15px; border-radius: 4px; font-size: 0.95rem; color: #ecf0f1;">
+            ${mission.helpHint}
+        </div>
+    ` : '';
+
     // Handle Array Builder
     if (mission.type === 'array-builder') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box">
+                ${hintButtonHtml}
                 <p><strong>🔢 Multiplication Scavenger Hunt:</strong> ${mission.question}</p>
                 <p>Select object type: 
                    <select id="array-object" style="padding: 5px; font-size: 1rem;">
@@ -104,12 +114,13 @@ function renderCurrentMission() {
         return;
     }
 
-    // Handle Science Animal Poster Studio with Custom HTML5 Canvas Toolbar
+    // Handle Science Animal Poster Studio
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
+                ${hintButtonHtml}
                 <p><strong>🎨 Science Animal Research Poster Studio:</strong> ${mission.question}</p>
                 
                 <div class="drawing-studio-container">
@@ -117,9 +128,7 @@ function renderCurrentMission() {
                         <button id="pen-btn" onclick="setDrawingTool('pen')" class="active-tool" style="background: #3498db; color:white;">✏️ Pen</button>
                         <button id="highlighter-btn" onclick="setDrawingTool('highlighter')" style="background: #f1c40f; color:black;">🖍️ Highlighter</button>
                         <button id="eraser-btn" onclick="setDrawingTool('eraser')" style="background: #e74c3c; color:white;">🧹 Eraser</button>
-                        
                         <label style="color: white; font-size: 0.9rem;">Color: <input type="color" id="color-picker" value="#000000" onchange="changeColor(this.value)"></label>
-                        
                         <label style="color: white; font-size: 0.9rem;">Size: 
                             <select id="brush-size" onchange="changeSize(this.value)">
                                 <option value="3">Fine</option>
@@ -128,16 +137,13 @@ function renderCurrentMission() {
                                 <option value="24">Marker</option>
                             </select>
                         </label>
-                        
-                        <button onclick="clearCanvas('poster-canvas')" style="background: #95a5a6; color:white;">🔄 Clear Canvas</button>
+                        <button onclick="clearCanvas('poster-canvas')" style="background: #95a5a6; color:white;">🔄 Clear</button>
                     </div>
-                    
                     <canvas id="poster-canvas" class="drawing-canvas"></canvas>
                 </div>
 
                 <p><strong>Type your 5 Animal Facts Below:</strong></p>
-                <textarea id="poster-facts-input" placeholder="Example: 1. Dalmatians were fire dogs... 2. Born white..."></textarea>
-                
+                <textarea id="poster-facts-input" placeholder="Example: 1. Dalmatians were fire dogs..."></textarea>
                 <br>
                 <button onclick="advanceFromPoster()" style="background: #3498db; margin-top: 15px;">Save Poster & Continue</button>
             </div>
@@ -146,27 +152,25 @@ function renderCurrentMission() {
         return;
     }
 
-    // Handle Social Studies Community Canvas with Toolbar
+    // Handle Social Studies Community Canvas
     if (mission.type === 'community-canvas') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
             <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
             <div class="quiz-box" style="text-align: left;">
+                ${hintButtonHtml}
                 <p><strong>🏘️ Social Studies Community Canvas:</strong> ${mission.question}</p>
                 
                 <p><strong>1. Think (Write your community definition & ideas):</strong></p>
-                <textarea id="community-definition-input" placeholder="Example: A community is a group of people and places like our neighborhood and fire station that help each other..."></textarea>
+                <textarea id="community-definition-input" placeholder="Example: A community is a group of people and places..."></textarea>
                 
                 <p style="margin-top: 15px;"><strong>2. Draw (Draw your community, important places, and people):</strong></p>
-                
                 <div class="drawing-studio-container">
                     <div class="drawing-toolbar">
                         <button id="comm-pen-btn" onclick="setDrawingTool('pen')" class="active-tool" style="background: #3498db; color:white;">✏️ Pen</button>
                         <button id="comm-highlighter-btn" onclick="setDrawingTool('highlighter')" style="background: #f1c40f; color:black;">🖍️ Highlighter</button>
                         <button id="comm-eraser-btn" onclick="setDrawingTool('eraser')" style="background: #e74c3c; color:white;">🧹 Eraser</button>
-                        
                         <label style="color: white; font-size: 0.9rem;">Color: <input type="color" id="comm-color-picker" value="#27ae60" onchange="changeColor(this.value)"></label>
-                        
                         <label style="color: white; font-size: 0.9rem;">Size: 
                             <select id="comm-brush-size" onchange="changeSize(this.value)">
                                 <option value="3">Fine</option>
@@ -175,16 +179,13 @@ function renderCurrentMission() {
                                 <option value="24">Marker</option>
                             </select>
                         </label>
-                        
-                        <button onclick="clearCanvas('community-canvas')" style="background: #95a5a6; color:white;">🔄 Clear Canvas</button>
+                        <button onclick="clearCanvas('community-canvas')" style="background: #95a5a6; color:white;">🔄 Clear</button>
                     </div>
-                    
                     <canvas id="community-canvas" class="drawing-canvas"></canvas>
                 </div>
 
                 <p style="margin-top: 15px;"><strong>3. Share:</strong> Discuss your drawing with a family member!</p>
                 <label><input type="checkbox" id="shared-checkbox"> I have shared and discussed my community drawing with a family member.</label>
-                
                 <br>
                 <button onclick="finalizeDayCompletion()" style="background: #2ecc71; margin-top: 15px;">Complete Day 1 & Finish!</button>
             </div>
@@ -205,11 +206,20 @@ function renderCurrentMission() {
         <p><em>Requirement: Spend at least ${dayData.targetMinutes} minutes on learning activities today[cite: 2].</em></p>
         ${readingHtml}
         <div class="quiz-box">
+            ${hintButtonHtml}
             <p><strong>Mission Challenge:</strong> ${mission.question}</p>
             ${evidenceHtml}
             ${buttonsHtml}
         </div>
     `;
+}
+
+// Function to toggle the Chief's Hint box
+function showChiefHint() {
+    const hintBox = document.getElementById('chief-hint-box');
+    if (hintBox) {
+        hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+    }
 }
 
 // --- HTML5 Tablet Drawing Engine Logic ---
@@ -218,12 +228,9 @@ function initDrawingCanvas(canvasId) {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    
-    // Set proper canvas drawing resolution matching display size
     canvas.width = canvas.parentElement.clientWidth - 30;
     canvas.height = 350;
     
-    // Fill white background initially so transparency doesn't export black
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -259,7 +266,7 @@ function initDrawingCanvas(canvasId) {
             ctx.globalAlpha = 1.0;
         } else if (toolMode === 'highlighter') {
             ctx.strokeStyle = brushColor;
-            ctx.globalAlpha = 0.3; // Semi-transparent for highlighter effect
+            ctx.globalAlpha = 0.3;
         } else {
             ctx.strokeStyle = brushColor;
             ctx.globalAlpha = 1.0;
@@ -276,13 +283,11 @@ function initDrawingCanvas(canvasId) {
         ctx.closePath();
     }
 
-    // Mouse events
     canvas.onmousedown = startDraw;
     canvas.onmousemove = draw;
     canvas.onmouseup = stopDraw;
     canvas.onmouseleave = stopDraw;
 
-    // Touch events for tablets / iPads
     canvas.ontouchstart = startDraw;
     canvas.ontouchmove = draw;
     canvas.ontouchend = stopDraw;
@@ -290,7 +295,6 @@ function initDrawingCanvas(canvasId) {
 
 function setDrawingTool(mode) {
     toolMode = mode;
-    // Highlight active button UI
     ['pen-btn', 'comm-pen-btn'].forEach(id => {
         let el = document.getElementById(id);
         if(el) el.classList.toggle('active-tool', mode === 'pen');
@@ -305,13 +309,8 @@ function setDrawingTool(mode) {
     });
 }
 
-function changeColor(color) {
-    brushColor = color;
-}
-
-function changeSize(size) {
-    brushSize = parseInt(size);
-}
+function changeColor(color) { brushColor = color; }
+function changeSize(size) { brushSize = parseInt(size); }
 
 function clearCanvas(canvasId) {
     const canvas = document.getElementById(canvasId);
@@ -435,6 +434,7 @@ function finalizeDayCompletion() {
         stampsHtml += "</ul>";
         document.getElementById('daily-stamps').innerHTML = stampsHtml;
 
+        document.getElementById('certificate-modal').classList.format = 'hidden'; // Fixed
         document.getElementById('certificate-modal').classList.remove('hidden');
     }
 }
@@ -445,9 +445,8 @@ function returnToMap() {
     document.getElementById('quest-map').classList.remove('hidden');
 }
 
-// Generates formal printable report including both canvas exports
 function printSchoolAttendanceReport() {
-    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Completed.";
+    let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input'].value : "Completed.";
     let communityText = document.getElementById('community-definition-input') ? document.getElementById('community-definition-input').value : "Completed.";
     let sharedChecked = document.getElementById('shared-checkbox') ? document.getElementById('shared-checkbox').checked : true;
 
@@ -541,7 +540,6 @@ function printSchoolAttendanceReport() {
     setTimeout(() => { reportWindow.print(); }, 500);
 }
 
-// Download helper for HTML5 Canvases
 function downloadCanvasImage(canvasId, filename) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) { alert("Canvas not found."); return; }
