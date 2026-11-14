@@ -3,52 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NTI Quest Island: Fire Rescue Edition</title>
+    <title>Easen Spicer - NTI Learning Adventure</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="https://unpkg.com/tldraw/tldraw.css"/> <!-- ADD THIS LINE -->
-    <meta name="theme-color" content="#e74c3c">
 </head>
 <body>
-    <div id="app">
-        <header>
-            <h1>🚨 NTI Quest: Fire & Rescue Academy 🚒</h1>
-            <div id="timer-display">Time: <span id="time">00:00</span></div>
-        </header>
 
-        <!-- Dynamic Quest Map Screen -->
-        <main id="quest-map" class="screen">
-            <h2>Select Your Mission</h2>
-            <div class="island-grid" id="island-grid-container">
-                <!-- Populated dynamically by app.js -->
+    <!-- Header / Status Bar with Timer and Pause Button -->
+    <header id="status-bar">
+        <div><strong>Student:</strong> Easen Spicer</div>
+        <div>
+            <strong>Learning Time:</strong> <span id="time">00:00</span> 
+            <button id="timer-toggle-btn" onclick="toggleTimer()">⏸️ Pause</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main>
+        <!-- Quest Map View -->
+        <section id="quest-map" class="view">
+            <h1>🔥 Fire & Rescue NTI Academy</h1>
+            <p>Select your active mission below to complete your daily Oldham County NTI requirements (60–90 minutes daily).</p>
+            <div id="island-grid-container" class="grid-container">
+                <!-- Dynamically populated by app.js -->
             </div>
-        </main>
-
-        <!-- Activity Screen -->
-        <section id="activity-screen" class="screen hidden">
-            <button class="back-btn" onclick="returnToMap()">⬅ Back to Map</button>
-            <div id="activity-content"></div>
         </section>
 
-        <!-- Certificate Screen -->
-<div id="certificate-modal" class="hidden">
-    <div class="cert-box" id="certificate-print-area">
-        <h2>🌟 NTI CERTIFICATE OF COMPLETION 🌟</h2>
-        <p>This certifies that</p>
-        <h3 id="cert-student-name">Easen Spicer</h3>
-        <p>successfully completed all NTI Fire & Rescue Missions!</p>
-        <p><strong>Total Time:</strong> <span id="cert-time">0 min</span></p>
-        <p><strong>Completed On:</strong> November 13, 2026</p>
-        <div id="daily-stamps" style="font-size: 0.9rem; margin: 10px 0; text-align: left;"></div>
-        
-        <button onclick="printSchoolAttendanceReport()" style="background: #e67e22;">📋 Print School Attendance & Inference Report</button>
-        <br>
-        <button onclick="downloadCertificateImage()" style="background: #27ae60;">📥 Print / Save Certificate PDF</button>
-        <br>
-        <button onclick="returnToMapFromCert()" style="background: #7f8c8d;">Close</button>
+        <!-- Active Activity / Mission Screen -->
+        <section id="activity-screen" class="view hidden">
+            <button onclick="returnToMap()" style="background: #e74c3c; margin-bottom: 15px;">🗺️ Back to Mission Map</button>
+            <div id="activity-content">
+                <!-- Dynamically populated quiz, array builder, or canvas studios -->
             </div>
+        </section>
+    </main>
+
+    <!-- Completion & Verification Modal -->
+    <div id="certificate-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 Academy Graduation & NTI Report</h2>
+            <p>Fantastic job completing all NTI learning modules, Easen!</p>
+            <p><strong>Total Time Logged:</strong> <span id="cert-time">0 min</span></p>
+            <div id="daily-stamps"></div>
+            <br>
+            <button onclick="printSchoolAttendanceReport()" style="background: #2ecc71; padding: 12px 20px; font-size: 1.1rem;">🖨️ Print / Save Formal School Attendance Report</button>
+            <br><br>
+            <button onclick="returnToMapFromCert()" style="background: #3498db;">Close & Return to Map</button>
         </div>
     </div>
+
+    <!-- Scripts -->
     <script src="days-config.js"></script>
     <script src="app.js"></script>
 </body>
