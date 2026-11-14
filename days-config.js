@@ -1,74 +1,74 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Literacy & Math Arrays",
+        category: "Advanced Literacy & Multi-Step Math",
         targetMinutes: 60, // Oldham County NTI minimum home learning time
         unlocked: true,
-        readingText: "Billy to the Rescue",
+        readingText: "Nate the Great and the Missing Case (Adapted Dispatch)",
         readingUrl: "https://bookspring.org/wp-content/uploads/2021/05/41354-billy-to-the-rescue.pdf",
         missions: [
             {
                 type: "quiz",
-                question: "Part 1 (Inference): Billy gets covered in soot and mud putting out a tough fire. What can you infer about how the other fire engines treat him afterward?",
+                question: "Part 1 (Context Clues): The text states, 'The alarm clattered loudly, and the crew scrambled toward the bay.' Based on this, what does the word 'scrambled' most likely mean?",
                 options: [
-                    { text: "A) They are proud of his hard work and praise him", correct: true },
-                    { text: "B) They send him away to the junkyard", correct: false }
+                    { text: "A) Moved quickly and in a hurried way", correct: true },
+                    { text: "B) Walked slowly and ate breakfast", correct: false }
                 ]
             },
             {
                 type: "quiz",
-                question: "Part 2 (Math Arrays): The station has 12 new fire hoses to organize into storage racks. Which multiplication array shows 12 items?",
+                question: "Part 2 (Multi-Step Math): Engine 4 used 145 gallons of water on a grass fire and 230 gallons on a truck fire. If the tank holds 500 gallons total, how many gallons are left?",
                 options: [
-                    { text: "A) 3 rows of 4 hoses (3 x 4 = 12)", correct: true },
-                    { text: "B) 5 rows of 2 hoses (5 x 2 = 10)", correct: false }
+                    { text: "A) 125 gallons", correct: true },
+                    { text: "B) 375 gallons", correct: false }
                 ]
             }
         ]
     },
     2: {
         title: "Day 2: Metropolis Rescue",
-        category: "Figurative Language & Place Value",
+        category: "Compound Words & Elapsed Time",
         targetMinutes: 60,
         unlocked: false,
         missions: [
             {
                 type: "quiz",
-                question: "Part 1 (Figurative Language): Which of these is a simile used to describe a brave firefighter?",
+                question: "Part 1 (Word Structure): Which of these firefighter-related words is a compound word made of two smaller standalone words?",
                 options: [
-                    { text: "A) He is as brave as a lion.", correct: true },
-                    { text: "B) The hose was a roaring dragon.", correct: false }
+                    { text: "A) Backdraft (back + draft)", correct: true },
+                    { text: "B) Helmet", correct: false }
                 ]
             },
             {
                 type: "quiz",
-                question: "Part 2 (Place Value): The fire engine's odometer reads 4,872 miles. What is this number rounded to the nearest 100?",
+                question: "Part 2 (Elapsed Time): The fire truck left the station at 9:15 AM and returned at 10:05 AM. How long was the crew out on the call?",
                 options: [
-                    { text: "A) 4,900", correct: true },
-                    { text: "B) 4,800", correct: false }
+                    { text: "A) 50 minutes", correct: true },
+                    { text: "B) 1 hour and 10 minutes", correct: false }
                 ]
             }
         ]
     },
     3: {
         title: "Day 3: Station Summit",
-        category: "Natural Disasters & Community Rules",
+        category: "Nonfiction Text Features & Fractions",
         targetMinutes: 60,
         unlocked: false,
         missions: [
             {
                 type: "quiz",
-                question: "Part 1 (Community Rules): Why do firefighters wear full turnout gear during an alarm?",
+                question: "Part 1 (Nonfiction Features): If a firefighter's manual has a section at the back listing difficult words and their meanings alphabetically, what is that section called?",
                 options: [
-                    { text: "A) To protect themselves from extreme heat and embers.", correct: true },
-                    { text: "B) To look stylish for the town parade.", correct: false }
+                    { text: "A) A glossary", correct: true },
+                    { text: "B) An index", correct: false }
                 ]
             },
             {
                 type: "quiz",
-                question: "Part 2 (Natural Disasters): Which tool helps protect a tall fire station building from a lightning strike during a thunderstorm?",
+                question: "Part 2 (Fractions): The station captain cut a firehouse pizza into 8 equal slices. The crew ate 6 slices. What fraction of the pizza is left?",
                 options: [
-                    { text: "A) A lightning rod on the roof", correct: true },
-                    { text: "B) A wind sock in the yard", correct: false }
+                    { text: "A) 2/8 (or 1/4)", correct: true },
+                    { text: "B) 6/8", correct: false }
                 ]
             }
         ]
