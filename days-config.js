@@ -1,7 +1,7 @@
 const ntiDaysData = {
     1: {
         title: "Day 1: Firehouse Dispatch",
-        category: "Literacy - Inferences & Multi-Step Math",
+        category: "Literacy Inferences & Multiplication Scavenger Hunt",
         targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: true,
         readingText: "Starfall Firefighter Reader",
@@ -53,12 +53,8 @@ const ntiDaysData = {
                 evidence: "Text Evidence: Citizens wave and cheer for the crew. + Background Knowledge: People thank their protectors. = Inference: The community has deep trust and gratitude."
             },
             {
-                type: "quiz",
-                question: "Part 2 (Multi-Step Math): Engine 4 used 145 gallons of water on a grass fire and 230 gallons on a truck fire. If the tank holds 500 gallons total, how many gallons are left?",
-                options: [
-                    { text: "A) 125 gallons", correct: true },
-                    { text: "B) 375 gallons", correct: false }
-                ]
+                type: "array-builder",
+                question: "Math Scavenger Hunt: Build arrays to total 12 using station items (e.g., 3 rows of 4, or 4 rows of 3), then type your matching multiplication equation!"
             }
         ]
     },
@@ -102,7 +98,7 @@ const ntiDaysData = {
             },
             {
                 type: "quiz",
-                question: "Part 2 (Fractions): The station captain cut a firehouse pizza into 8 equal slices. The crew ate 6 slices. What fraction of the pizza is left?",
+                question: "Part 2 (Fractions): The station captain cut a firehouse pizza into 8 equal slices. Grid cut into 8 equal slices. What fraction of the pizza is left?",
                 options: [
                     { text: "A) 2/8 (or 1/4)", correct: true },
                     { text: "B) 6/8", correct: false }
