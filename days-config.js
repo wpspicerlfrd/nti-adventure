@@ -14,7 +14,8 @@ const ntiDaysData = {
                     { text: "A) They prioritize community safety and act with extreme urgency.", correct: true },
                     { text: "B) They are just rushing because they want to eat breakfast.", correct: false }
                 ],
-                evidence: "Text Evidence: The alarm sounds and they immediately move to their gear. + Background Knowledge: Emergencies require fast action. = Inference: They are dedicated to protecting people quickly."
+                evidence: "Text Evidence: The alarm sounds and they immediately move to their gear. + Background Knowledge: Emergencies require fast action. = Inference: They are dedicated to protecting people quickly.",
+                helpHint: "💡 Chief's Hint: Look at what the firefighters do the *second* the alarm rings. Combine that action with what you know about why emergency crews exist!"
             },
             {
                 type: "quiz",
@@ -23,7 +24,8 @@ const ntiDaysData = {
                     { text: "A) Teamwork is essential for a firefighting crew to succeed safely.", correct: true },
                     { text: "B) One person could easily do every single job alone.", correct: false }
                 ],
-                evidence: "Text Evidence: Different crew members handle specific tools together. + Background Knowledge: Teamwork prevents mistakes. = Inference: Teamwork is essential."
+                evidence: "Text Evidence: Different crew members handle specific tools together. + Background Knowledge: Teamwork prevents mistakes. = Inference: Teamwork is essential.",
+                helpHint: "💡 Chief's Hint: Notice how *different* crew members handle different tools. Could one person carry a heavy hose, drive the rig, and pump water all by themselves?"
             },
             {
                 type: "quiz",
@@ -32,7 +34,8 @@ const ntiDaysData = {
                     { text: "A) Their job is physically demanding and requires specialized protection against hazards.", correct: true },
                     { text: "B) They wear heavy gear just to look stylish for the neighborhood.", correct: false }
                 ],
-                evidence: "Text Evidence: They wear heavy protective suits. + Background Knowledge: Gear shields the body from high heat. = Inference: The work involves serious physical hazards."
+                evidence: "Text Evidence: They wear heavy protective suits. + Background Knowledge: Gear shields the body from high heat. = Inference: The work involves serious physical hazards.",
+                helpHint: "💡 Chief's Hint: Think about why firefighters wear thick heavy coats and helmets instead of regular clothes when entering a burning building."
             },
             {
                 type: "quiz",
@@ -41,7 +44,8 @@ const ntiDaysData = {
                     { text: "A) Being prepared and maintaining equipment prevents dangerous failures.", correct: true },
                     { text: "B) They only clean the truck because they are bored.", correct: false }
                 ],
-                evidence: "Text Evidence: They inspect and clean tools after calls. + Background Knowledge: Broken tools cost lives. = Inference: Maintenance ensures life-saving readiness."
+                evidence: "Text Evidence: They inspect and clean tools after calls. + Background Knowledge: Broken tools cost lives. = Inference: Maintenance ensures life-saving readiness.",
+                helpHint: "💡 Chief's Hint: Imagine if a rescue tool broke during an emergency call because nobody checked it. Regular maintenance keeps everyone safe!"
             },
             {
                 type: "quiz",
@@ -50,11 +54,13 @@ const ntiDaysData = {
                     { text: "A) The community deeply trusts and appreciates the firefighters' service.", correct: true },
                     { text: "B) The neighbors are just annoyed by the loud motor.", correct: false }
                 ],
-                evidence: "Text Evidence: Citizens wave and cheer for the crew. + Background Knowledge: People thank their protectors. = Inference: The community has deep trust and gratitude."
+                evidence: "Text Evidence: Citizens wave and cheer for the crew. + Background Knowledge: People thank their protectors. = Inference: The community has deep trust and gratitude.",
+                helpHint: "💡 Chief's Hint: When people smile and wave instead of running away, how do they feel about the firefighters protecting their homes?"
             },
             {
                 type: "array-builder",
-                question: "Math Scavenger Hunt: Gather twelve (12) items (or choose station items) and create arrays to total 12. Record your rows, columns, and multiplication equations!"
+                question: "Multiplication Scavenger Hunt: Gather twelve (12) items (or choose station items) and create arrays to total 12. Record your rows, columns, and multiplication equations!",
+                helpHint: "💡 Chief's Math Tip: Think of an array like rows of chairs or tools on a shelf! Rows go across (↔️) and columns go down (↕️). Try 3 rows of 4 (3 × 4 = 12) or 4 rows of 3 (4 × 3 = 12)!"
             },
             {
                 type: "quiz",
@@ -63,22 +69,26 @@ const ntiDaysData = {
                     { text: "A) Lives at the firehouse/homes, has an incredible sense of smell, eats high-protein dog food, helps track lost hikers, and wears a safety vest.", correct: true },
                     { text: "B) Lives underwater in coral reefs, swims with fins, eats microscopic algae, sleeps in shells, and changes color.", correct: false }
                 ],
-                evidence: "Science Focus: Animal habitat, traits, characteristics, and environmental interaction."
+                evidence: "Science Focus: Animal habitat, traits, characteristics, and environmental interaction.",
+                helpHint: "💡 Chief's Science Tip: Think about working dogs at emergency stations. Where do they live, what is their superpower (smell), and how do they help rescue teams?"
             },
             {
                 type: "poster-studio",
-                question: "Science Poster: Design your Animal Research Poster! Draw your animal and its habitat, then type out 5 facts about it."
+                question: "Science Poster: Design your Animal Research Poster! Draw your animal and its habitat, then type out 5 facts about it.",
+                helpHint: "💡 Chief's Poster Tip: Use the pen tool to draw your animal's home (like a firehouse kennel or outdoor field), use the highlighter for grass or sky, and list 5 cool facts below!"
             },
             {
                 type: "community-canvas",
-                question: "Social Studies - What is a Community?: Define your community, draw important community places and people (like your neighborhood and fire station), and share it with a family member!"
+                question: "Social Studies - What is a Community?: Define your community, draw important community places and people (like your neighborhood and fire station), and share it with a family member!",
+                helpHint: "💡 Chief's Community Tip: A community is a group of people and places that rely on each other. Draw your neighborhood houses, roads, and your local fire station!"
             }
         ]
     },
+    // ... Days 2 & 3
     2: {
         title: "Day 2: Metropolis Rescue",
         category: "Compound Words & Elapsed Time",
-        targetMinutes: 60, 
+        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: false,
         missions: [
             {
@@ -87,7 +97,8 @@ const ntiDaysData = {
                 options: [
                     { text: "A) Backdraft (back + draft)", correct: true },
                     { text: "B) Helmet", correct: false }
-                ]
+                ],
+                helpHint: "💡 Chief's Hint: A compound word is two whole words put together to make a new word (like fire + house = firehouse)."
             },
             {
                 type: "quiz",
@@ -95,14 +106,15 @@ const ntiDaysData = {
                 options: [
                     { text: "A) 50 minutes", correct: true },
                     { text: "B) 1 hour and 10 minutes", correct: false }
-                ]
+                ],
+                helpHint: "💡 Chief's Hint: Count from 9:15 AM to 10:00 AM (45 minutes), then add the extra 5 minutes past 10:00!"
             }
         ]
     },
     3: {
         title: "Day 3: Station Summit",
         category: "Nonfiction Text Features & Fractions",
-        targetMinutes: 60, 
+        targetMinutes: 60, // Oldham County NTI minimum home learning time[cite: 2]
         unlocked: false,
         missions: [
             {
@@ -111,7 +123,8 @@ const ntiDaysData = {
                 options: [
                     { text: "A) A glossary", correct: true },
                     { text: "B) An index", correct: false }
-                ]
+                ],
+                helpHint: "💡 Chief's Hint: Think of the mini-dictionary at the back of a textbook where words are listed in ABC order."
             },
             {
                 type: "quiz",
@@ -119,7 +132,8 @@ const ntiDaysData = {
                 options: [
                     { text: "A) 2/8 (or 1/4)", correct: true },
                     { text: "B) 6/8", correct: false }
-                ]
+                ],
+                helpHint: "💡 Chief's Hint: If there were 8 slices total and they ate 6, subtract 6 from 8 to see how many slices remain on top!"
             }
         ]
     }
