@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTI Quest Island: Fire Rescue Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e74c3c">
+</head>
+<body>
+    <div id="app">
+        <!-- Header & Timer -->
+        header>
+            <h1>🚨 NTI Quest: Fire & Rescue Academy 🚒</h1>
+            <div id="timer-display">Time: <span id="time">00:00</span></div>
+        </header>
+
+        <!-- Quest Map Screen -->
+        <main id="quest-map" class="screen">
+            <h2>Select Your Mission</h2>
+            <div class="island-grid">
+                <div class="island-card locked" id="node-day1" onclick="startDay(1)">
+                    <h3>Day 1: Firehouse Dispatch</h3>
+                    <p>Literacy (*Billy to the Rescue*) & Math Arrays</p>
+                    <span class="status">🔓 Available</span>
+                </div>
+                <div class="island-card locked" id="node-day2" onclick="startDay(2)">
+                    <h3>Day 2: Metropolis Rescue</h3>
+                    <p>Figurative Language & Place Value</p>
+                    <span class="status">🔒 Locked</span>
+                </div>
+                <div class="island-card locked" id="node-day3" onclick="startDay(3)">
+                    <h3>Day 3: Station Summit</h3>
+                    <p>Natural Disasters & Community Rules</p>
+                    <span class="status">🔒 Locked</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Activity Screen -->
+        <section id="activity-screen" class="screen hidden">
+            <button class="back-btn" onclick="returnToMap()">⬅ Back to Map</button>
+            <div id="activity-content"></div>
+        </section>
+
+        <!-- Certificate Screen -->
+        <div id="certificate-modal" class="hidden">
+            <div class="cert-box">
+                <h2>🌟 NTI CERTIFICATE OF COMPLETION 🌟</h2>
+                <p>This certifies that</p>
+                <h3 id="cert-name">Cadet</h3>
+                <p>successfully completed all NTI Fire & Rescue Missions!</p>
+                <p><strong>Total Time:</strong> <span id="cert-time">0 min</span></p>
+                <p><strong>Completed On:</strong> November 13, 2026</p>
+                <button onclick="takeScreenshotAction()">📸 Take Screenshot / Done</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
