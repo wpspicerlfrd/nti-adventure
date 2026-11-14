@@ -7,9 +7,12 @@ let dayCompletionTimestamps = {};
 let answeredInferences = []; 
 let recordedArrays = []; 
 
-// Canvas instances for Easen's projects
-let tlDrawInstance = null;         // For Science Animal Poster
-let communityTlInstance = null;    // For Social Studies Community Canvas
+// Active drawing state trackers
+let currentContext = null;
+let isDrawing = false;
+let brushColor = "#000000";
+let brushSize = 5;
+let toolMode = "pen"; // 'pen', 'highlighter', 'eraser'
 
 function renderMap() {
     const gridContainer = document.getElementById('island-grid-container');
@@ -69,16 +72,6 @@ function renderCurrentMission() {
 
     const mission = dayData.missions[currentMissionIndex];
 
-    // Clean up previous canvas instances if switching views
-    if (tlDrawInstance) {
-        tlDrawInstance.destroy();
-        tlDrawInstance = null;
-    }
-    if (communityTlInstance) {
-        communityTlInstance.destroy();
-        communityTlInstance = null;
-    }
-
     let readingHtml = '';
     if (currentMissionIndex === 0 && dayData.readingText && dayData.readingUrl) {
         readingHtml = `<p><strong>Reading Activity:</strong> Read <a href="${dayData.readingUrl}" target="_blank">${dayData.readingText}</a>.</p>`;
@@ -111,7 +104,7 @@ function renderCurrentMission() {
         return;
     }
 
-    // Handle Science Animal Poster Studio
+    // Handle Science Animal Poster Studio with Custom HTML5 Canvas Toolbar
     if (mission.type === 'poster-studio') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
@@ -119,8 +112,27 @@ function renderCurrentMission() {
             <div class="quiz-box" style="text-align: left;">
                 <p><strong>🎨 Science Animal Research Poster Studio:</strong> ${mission.question}</p>
                 
-                <div id="digital-poster-studio">
-                    <div id="tl-app" class="tl-container"></div>
+                <div class="drawing-studio-container">
+                    <div class="drawing-toolbar">
+                        <button id="pen-btn" onclick="setDrawingTool('pen')" class="active-tool" style="background: #3498db; color:white;">✏️ Pen</button>
+                        <button id="highlighter-btn" onclick="setDrawingTool('highlighter')" style="background: #f1c40f; color:black;">🖍️ Highlighter</button>
+                        <button id="eraser-btn" onclick="setDrawingTool('eraser')" style="background: #e74c3c; color:white;">🧹 Eraser</button>
+                        
+                        <label style="color: white; font-size: 0.9rem;">Color: <input type="color" id="color-picker" value="#000000" onchange="changeColor(this.value)"></label>
+                        
+                        <label style="color: white; font-size: 0.9rem;">Size: 
+                            <select id="brush-size" onchange="changeSize(this.value)">
+                                <option value="3">Fine</option>
+                                <option value="6" selected>Medium</option>
+                                <option value="12">Thick</option>
+                                <option value="24">Marker</option>
+                            </select>
+                        </label>
+                        
+                        <button onclick="clearCanvas('poster-canvas')" style="background: #95a5a6; color:white;">🔄 Clear Canvas</button>
+                    </div>
+                    
+                    <canvas id="poster-canvas" class="drawing-canvas"></canvas>
                 </div>
 
                 <p><strong>Type your 5 Animal Facts Below:</strong></p>
@@ -130,11 +142,11 @@ function renderCurrentMission() {
                 <button onclick="advanceFromPoster()" style="background: #3498db; margin-top: 15px;">Save Poster & Continue</button>
             </div>
         `;
-        tlDrawInstance = new Tldraw.Tldraw(document.getElementById('tl-app'));
+        initDrawingCanvas('poster-canvas');
         return;
     }
 
-    // Handle Social Studies Community Canvas
+    // Handle Social Studies Community Canvas with Toolbar
     if (mission.type === 'community-canvas') {
         content.innerHTML = `
             <h2>${dayData.title} (Step ${currentMissionIndex + 1} of ${dayData.missions.length})</h2>
@@ -146,8 +158,28 @@ function renderCurrentMission() {
                 <textarea id="community-definition-input" placeholder="Example: A community is a group of people and places like our neighborhood and fire station that help each other..."></textarea>
                 
                 <p style="margin-top: 15px;"><strong>2. Draw (Draw your community, important places, and people):</strong></p>
-                <div id="digital-poster-studio">
-                    <div id="community-tl-app" class="tl-container"></div>
+                
+                <div class="drawing-studio-container">
+                    <div class="drawing-toolbar">
+                        <button id="comm-pen-btn" onclick="setDrawingTool('pen')" class="active-tool" style="background: #3498db; color:white;">✏️ Pen</button>
+                        <button id="comm-highlighter-btn" onclick="setDrawingTool('highlighter')" style="background: #f1c40f; color:black;">🖍️ Highlighter</button>
+                        <button id="comm-eraser-btn" onclick="setDrawingTool('eraser')" style="background: #e74c3c; color:white;">🧹 Eraser</button>
+                        
+                        <label style="color: white; font-size: 0.9rem;">Color: <input type="color" id="comm-color-picker" value="#27ae60" onchange="changeColor(this.value)"></label>
+                        
+                        <label style="color: white; font-size: 0.9rem;">Size: 
+                            <select id="comm-brush-size" onchange="changeSize(this.value)">
+                                <option value="3">Fine</option>
+                                <option value="6" selected>Medium</option>
+                                <option value="12">Thick</option>
+                                <option value="24">Marker</option>
+                            </select>
+                        </label>
+                        
+                        <button onclick="clearCanvas('community-canvas')" style="background: #95a5a6; color:white;">🔄 Clear Canvas</button>
+                    </div>
+                    
+                    <canvas id="community-canvas" class="drawing-canvas"></canvas>
                 </div>
 
                 <p style="margin-top: 15px;"><strong>3. Share:</strong> Discuss your drawing with a family member!</p>
@@ -157,7 +189,7 @@ function renderCurrentMission() {
                 <button onclick="finalizeDayCompletion()" style="background: #2ecc71; margin-top: 15px;">Complete Day 1 & Finish!</button>
             </div>
         `;
-        communityTlInstance = new Tldraw.Tldraw(document.getElementById('community-tl-app'));
+        initDrawingCanvas('community-canvas');
         return;
     }
 
@@ -178,6 +210,115 @@ function renderCurrentMission() {
             ${buttonsHtml}
         </div>
     `;
+}
+
+// --- HTML5 Tablet Drawing Engine Logic ---
+function initDrawingCanvas(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Set proper canvas drawing resolution matching display size
+    canvas.width = canvas.parentElement.clientWidth - 30;
+    canvas.height = 350;
+    
+    // Fill white background initially so transparency doesn't export black
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    function getTouchPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDraw(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getTouchPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getTouchPos(e);
+        
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        if (toolMode === 'eraser') {
+            ctx.strokeStyle = '#ffffff';
+            ctx.globalAlpha = 1.0;
+        } else if (toolMode === 'highlighter') {
+            ctx.strokeStyle = brushColor;
+            ctx.globalAlpha = 0.3; // Semi-transparent for highlighter effect
+        } else {
+            ctx.strokeStyle = brushColor;
+            ctx.globalAlpha = 1.0;
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    }
+
+    function stopDraw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        isDrawing = false;
+        ctx.closePath();
+    }
+
+    // Mouse events
+    canvas.onmousedown = startDraw;
+    canvas.onmousemove = draw;
+    canvas.onmouseup = stopDraw;
+    canvas.onmouseleave = stopDraw;
+
+    // Touch events for tablets / iPads
+    canvas.ontouchstart = startDraw;
+    canvas.ontouchmove = draw;
+    canvas.ontouchend = stopDraw;
+}
+
+function setDrawingTool(mode) {
+    toolMode = mode;
+    // Highlight active button UI
+    ['pen-btn', 'comm-pen-btn'].forEach(id => {
+        let el = document.getElementById(id);
+        if(el) el.classList.toggle('active-tool', mode === 'pen');
+    });
+    ['highlighter-btn', 'comm-highlighter-btn'].forEach(id => {
+        let el = document.getElementById(id);
+        if(el) el.classList.toggle('active-tool', mode === 'highlighter');
+    });
+    ['eraser-btn', 'comm-eraser-btn'].forEach(id => {
+        let el = document.getElementById(id);
+        if(el) el.classList.toggle('active-tool', mode === 'eraser');
+    });
+}
+
+function changeColor(color) {
+    brushColor = color;
+}
+
+function changeSize(size) {
+    brushSize = parseInt(size);
+}
+
+function clearCanvas(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // Array builder logic
@@ -304,7 +445,7 @@ function returnToMap() {
     document.getElementById('quest-map').classList.remove('hidden');
 }
 
-// Generates formal printable report including both canvases
+// Generates formal printable report including both canvas exports
 function printSchoolAttendanceReport() {
     let factsText = document.getElementById('poster-facts-input') ? document.getElementById('poster-facts-input').value : "Completed.";
     let communityText = document.getElementById('community-definition-input') ? document.getElementById('community-definition-input').value : "Completed.";
@@ -374,7 +515,7 @@ function printSchoolAttendanceReport() {
                 <p style="background: #f9f9f9; padding: 15px; border: 1px solid #eee; border-radius: 4px;">
                     ${factsText.replace(/\n/g, '<br>')}
                 </p>
-                <button onclick="window.opener.downloadPosterImage()" style="background: #3498db; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Animal Poster Drawing (PNG)</button>
+                <button onclick="window.opener.downloadCanvasImage('poster-canvas', 'Easen_Spicer_Animal_Poster.png')" style="background: #3498db; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Animal Poster Drawing (PNG)</button>
             </div>
 
             <div class="box">
@@ -384,7 +525,7 @@ function printSchoolAttendanceReport() {
                     ${communityText.replace(/\n/g, '<br>')}
                 </p>
                 <p><strong>Family Discussion Share:</strong> ${sharedChecked ? '✅ Completed and discussed with family member.' : 'Pending'}</p>
-                <button onclick="window.opener.downloadCommunityImage()" style="background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Community Drawing (PNG)</button>
+                <button onclick="window.opener.downloadCanvasImage('community-canvas', 'Easen_Spicer_Community_Drawing.png')" style="background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">⬇ Download Community Drawing (PNG)</button>
             </div>
 
             <p style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
@@ -400,24 +541,14 @@ function printSchoolAttendanceReport() {
     setTimeout(() => { reportWindow.print(); }, 500);
 }
 
-// Functions to download each canvas drawing independently
-async function downloadPosterImage() {
-    if (!tlDrawInstance) { alert("No drawing found."); return; }
-    const dataUrl = await tlDrawInstance.getImageUrl();
+// Download helper for HTML5 Canvases
+function downloadCanvasImage(canvasId, filename) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) { alert("Canvas not found."); return; }
+    const dataUrl = canvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.href = dataUrl;
-    link.download = 'Easen_Spicer_Animal_Poster.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-async function downloadCommunityImage() {
-    if (!communityTlInstance) { alert("No community drawing found."); return; }
-    const dataUrl = await communityTlInstance.getImageUrl();
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'Easen_Spicer_Community_Drawing.png';
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
